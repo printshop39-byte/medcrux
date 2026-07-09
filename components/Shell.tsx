@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { NAV } from "@/lib/nav";
 import { SearchBar } from "./SearchBar";
 import { ShortcutOverlay } from "./ShortcutOverlay";
+import { AuthButton } from "./AuthButton";
 
 // Static classes so Tailwind keeps them; keyed by number of mobile nav items.
 const MOBILE_GRID: Record<number, string> = {
@@ -66,6 +67,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
             <div className="flex-1">
               <SearchBar />
             </div>
+            <AuthButton />
           </div>
         </header>
 
