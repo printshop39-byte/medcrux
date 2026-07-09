@@ -1,0 +1,255 @@
+import { DRUGS, getImportantDrugs } from "./drugs";
+import { TOPICS } from "./topics";
+import { CONCEPTS } from "./concepts";
+import { PRESCRIPTIONS } from "./prescriptions";
+import { Drug, Flashcard, MCQ } from "./types";
+
+// Flashcards are generated from drug AND concept data — single source of truth.
+// - No topic         → all concept cards + all drug cards
+// - "general-pharmacology" → concept cards only
+// - any other topic  → that topic's drug cards only
+export function getFlashcards(topic?: string): Flashcard[] {
+  const drugSource =
+    topic === "general-pharmacology" ? [] : topic ? DRUGS.filter((d) => d.topic === topic) : DRUGS;
+
+  const drugCards: Flashcard[] = drugSource.map((d) => ({
+    id: `fc-${d.id}`,
+    kind: "drug",
+    drugId: d.id,
+    topic: d.topic,
+    front: d.name,
+    back: [
+      `Class: ${d.drugClass}`,
+      `MOA: ${d.moa}`,
+      `Uses: ${d.uses.slice(0, 3).join(", ")}`,
+      `Side effects: ${d.sideEffects.slice(0, 3).join(", ")}`,
+    ].join("\n"),
+  }));
+
+  const conceptCards: Flashcard[] =
+    !topic || topic === "general-pharmacology"
+      ? CONCEPTS.map((c) => ({
+          id: `fc-concept-${c.id}`,
+          kind: "concept",
+          conceptId: c.id,
+          topic: "general-pharmacology",
+          front: c.title,
+          back: [
+            `Definition: ${c.definition}`,
+            `Exam answer: ${c.examAnswer}`,
+            `Example: ${c.example}`,
+            c.mnemonic ? `Mnemonic: ${c.mnemonic}` : "",
+          ]
+            .filter(Boolean)
+            .join("\n"),
+        }))
+      : [];
+
+  return [...conceptCards, ...drugCards];
+}
+
+export interface MCQWithMeta extends MCQ {
+  drugId: string;
+  drugName: string;
+  topic: string;
+}
+
+export function getMCQs(topic?: string): MCQWithMeta[] {
+  const drugs = topic ? DRUGS.filter((d) => d.topic === topic) : DRUGS;
+  return drugs.flatMap((d) =>
+    d.mcqs.map((m) => ({ ...m, drugId: d.id, drugName: d.name, topic: d.topic })),
+  );
+}
+
+export interface VivaWithMeta {
+  q: string;
+  a: string;
+  drugId: string;
+  drugName: string;
+  topic: string;
+}
+
+export function getVivaQuestions(topic?: string): VivaWithMeta[] {
+  const drugs = topic ? DRUGS.filter((d) => d.topic === topic) : DRUGS;
+  return drugs.flatMap((d) =>
+    d.vivaQuestions.map((v) => ({ ...v, drugId: d.id, drugName: d.name, topic: d.topic })),
+  );
+}
+
+// Deterministic shuffle (seeded) so server & client render the same order and
+// avoid hydration mismatches. Uses a simple LCG.
+export function seededShuffle<T>(arr: T[], seed: number): T[] {
+  const a = [...arr];
+  let s = seed || 1;
+  for (let i = a.length - 1; i > 0; i--) {
+    s = (s * 1103515245 + 12345) & 0x7fffffff;
+    const j = s % (i + 1);
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+export interface SearchResult {
+  drugId: string;
+  name: string;
+  drugClass: string;
+  topic: string;
+  matchedOn: string;
+}
+
+export function searchDrugs(query: string): SearchResult[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  const results: SearchResult[] = [];
+  for (const d of DRUGS) {
+    let matchedOn = "";
+    if (d.name.toLowerCase().includes(q)) matchedOn = "name";
+    else if (d.drugClass.toLowerCase().includes(q)) matchedOn = "class";
+    else if (d.uses.some((u) => u.toLowerCase().includes(q))) matchedOn = "use / disease";
+    else if (d.sideEffects.some((s) => s.toLowerCase().includes(q))) matchedOn = "side effect";
+    else if (d.moa.toLowerCase().includes(q)) matchedOn = "mechanism";
+    if (matchedOn) {
+      results.push({ drugId: d.id, name: d.name, drugClass: d.drugClass, topic: d.topic, matchedOn });
+    }
+  }
+  return results;
+}
+
+// ── Advanced multi-field drug filtering (Search page) ────────────────────────
+export interface DrugFilters {
+  query?: string; // matches drug name or class
+  topic?: string; // topic slug ("" = any)
+  drugClass?: string; // exact class ("" = any)
+  importantOnly?: boolean;
+  frequentOnly?: boolean;
+  sideEffect?: string; // substring match on side effects
+  use?: string; // substring match on uses / diseases
+}
+
+// Distinct drug classes for the class dropdown.
+export function getDrugClasses(): string[] {
+  return Array.from(new Set(DRUGS.map((d) => d.drugClass))).sort((a, b) => a.localeCompare(b));
+}
+
+export function filterDrugs(f: DrugFilters): Drug[] {
+  const q = (f.query ?? "").trim().toLowerCase();
+  const se = (f.sideEffect ?? "").trim().toLowerCase();
+  const use = (f.use ?? "").trim().toLowerCase();
+  return DRUGS.filter((d) => {
+    if (f.topic && d.topic !== f.topic) return false;
+    if (f.drugClass && d.drugClass !== f.drugClass) return false;
+    if (f.importantOnly && !d.importantForExam) return false;
+    if (f.frequentOnly && !d.askedFrequently) return false;
+    if (q && !(d.name.toLowerCase().includes(q) || d.drugClass.toLowerCase().includes(q))) return false;
+    if (se && !d.sideEffects.some((s) => s.toLowerCase().includes(se))) return false;
+    if (use && !d.uses.some((u) => u.toLowerCase().includes(use))) return false;
+    return true;
+  });
+}
+
+// ── Short-answer questions (Russian exam "напишите…") ────────────────────────
+// Generated from drug fields + concept exam answers. Deterministic templates.
+export interface ShortAnswerQ {
+  id: string;
+  prompt: string;
+  answer: string;
+  source: string; // drug name or concept title
+  topic: string;
+}
+
+export function getShortAnswers(topic?: string): ShortAnswerQ[] {
+  const out: ShortAnswerQ[] = [];
+
+  // Concept short answers belong to General Pharmacology.
+  if (!topic || topic === "general-pharmacology") {
+    for (const c of CONCEPTS) {
+      out.push({
+        id: `sa-${c.id}`,
+        prompt: `Define / explain: ${c.title}`,
+        answer: c.examAnswer,
+        source: c.title,
+        topic: "general-pharmacology",
+      });
+    }
+  }
+
+  const drugs =
+    topic === "general-pharmacology"
+      ? []
+      : topic
+        ? DRUGS.filter((d) => d.topic === topic)
+        : DRUGS;
+
+  for (const d of drugs) {
+    out.push({ id: `sa-${d.id}-moa`, prompt: `Write the mechanism of action of ${d.name}.`, answer: d.moa, source: d.name, topic: d.topic });
+    out.push({ id: `sa-${d.id}-uses`, prompt: `Enumerate the therapeutic uses of ${d.name}.`, answer: d.uses.join("; "), source: d.name, topic: d.topic });
+    out.push({ id: `sa-${d.id}-se`, prompt: `List the important side effects of ${d.name}.`, answer: d.sideEffects.join("; "), source: d.name, topic: d.topic });
+    if (d.contraindications.length)
+      out.push({ id: `sa-${d.id}-ci`, prompt: `State the contraindications of ${d.name}.`, answer: d.contraindications.join("; "), source: d.name, topic: d.topic });
+  }
+  return out;
+}
+
+// ── Revision helpers ─────────────────────────────────────────────────────────
+// Condensed one-line takeaway for crash-revision lists.
+export interface CrashItem {
+  id: string;
+  name: string;
+  drugClass: string;
+  keyPoint: string;
+}
+
+export function getCrashList(topic: string): CrashItem[] {
+  return DRUGS.filter((d) => d.topic === topic).map((d) => ({
+    id: d.id,
+    name: d.name,
+    drugClass: d.drugClass,
+    keyPoint: d.moa,
+  }));
+}
+
+// One-line concept crash revision for General Pharmacology.
+export interface ConceptCrashItem {
+  id: string;
+  title: string;
+  oneLine: string;
+}
+
+const CONCEPT_CRASH_IDS = [
+  "pharmacokinetics",
+  "pharmacodynamics",
+  "bioavailability",
+  "half-life",
+  "therapeutic-index",
+  "adverse-drug-reactions",
+  "cyp450-interactions",
+  "prescription-writing",
+];
+
+export function getConceptCrashList(): ConceptCrashItem[] {
+  return CONCEPT_CRASH_IDS.map((id) => CONCEPTS.find((c) => c.id === id))
+    .filter((c): c is (typeof CONCEPTS)[number] => Boolean(c))
+    .map((c) => ({ id: c.id, title: c.title, oneLine: c.definition }));
+}
+
+// A rotating quick-revision set of the most important drugs.
+export function getQuickRevisionDrugs(count = 12): Drug[] {
+  return getImportantDrugs().slice(0, count);
+}
+
+// Weak drugs = drugs from topics the student hasn't marked complete.
+export function getWeakDrugs(completedTopics: string[], count = 8): Drug[] {
+  const weak = DRUGS.filter((d) => !completedTopics.includes(d.topic));
+  return (weak.length ? weak : DRUGS).slice(0, count);
+}
+
+export const STATS = {
+  drugCount: DRUGS.length,
+  topicCount: TOPICS.length,
+  mcqCount: getMCQs().length,
+  flashcardCount: getFlashcards().length,
+  vivaCount: getVivaQuestions().length,
+  conceptCount: CONCEPTS.length,
+  shortAnswerCount: getShortAnswers().length,
+  prescriptionCount: PRESCRIPTIONS.length,
+};

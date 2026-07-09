@@ -1,0 +1,17 @@
+{
+  "name": "PharmaOS — MBBS Pharmacology Study App",
+  "short_name": "PharmaOS",
+  "description": "Exam-focused pharmacology revision app for MBBS students.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#f6f8f8",
+  "theme_color": "#256a66",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

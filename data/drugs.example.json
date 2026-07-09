@@ -1,0 +1,28 @@
+[
+  {
+    "id": "captopril",
+    "name": "Captopril",
+    "topic": "cardiovascular-drugs",
+    "drugClass": "ACE inhibitor (short-acting)",
+    "moa": "Inhibits angiotensin-converting enzyme; contains a sulfhydryl group.",
+    "uses": ["Hypertension", "Heart failure"],
+    "sideEffects": ["Dry cough", "Rash / taste disturbance (sulfhydryl)", "Hyperkalaemia"],
+    "contraindications": ["Pregnancy", "Bilateral renal artery stenosis"],
+    "interactions": ["K-sparing diuretics -> hyperkalaemia", "NSAIDs reduce effect"],
+    "mnemonic": "Captopril has the SH group -> more taste/rash effects.",
+    "vivaQuestions": [
+      { "q": "Which ACE inhibitor contains a sulfhydryl group?", "a": "Captopril." }
+    ],
+    "mcqs": [
+      {
+        "id": "cap-m1",
+        "question": "Captopril belongs to which class?",
+        "options": ["ARB", "ACE inhibitor", "Beta-blocker", "CCB"],
+        "answerIndex": 1,
+        "explanation": "Captopril is an ACE inhibitor."
+      }
+    ],
+    "importantForExam": true,
+    "askedFrequently": false
+  }
+]
