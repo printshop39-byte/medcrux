@@ -3,11 +3,11 @@ import "./globals.css";
 import { Shell } from "@/components/Shell";
 
 export const metadata: Metadata = {
-  title: "PharmaOS — MBBS Pharmacology Study App",
-  description: "Exam-focused pharmacology revision app for MBBS students.",
-  applicationName: "PharmaOS",
+  title: "MedCrux — MBBS Exam Revision App",
+  description: "Short notes, MCQs, viva, flashcards and study plans for MBBS students.",
+  applicationName: "MedCrux",
   manifest: "/manifest.webmanifest",
-  appleWebApp: { capable: true, title: "PharmaOS", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "MedCrux", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {

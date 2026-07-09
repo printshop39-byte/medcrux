@@ -27,7 +27,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
             ℞
           </div>
           <div>
-            <div className="text-base font-bold leading-none text-slate-800">PharmaOS</div>
+            <div className="text-base font-bold leading-none text-slate-800">MedCrux</div>
             <div className="text-[11px] text-slate-400">Fast pharmacology revision</div>
           </div>
         </div>
@@ -61,7 +61,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-white">
                 ℞
               </div>
-              <span className="font-bold text-slate-800">PharmaOS</span>
+              <span className="font-bold text-slate-800">MedCrux</span>
             </div>
             <div className="flex-1">
               <SearchBar />

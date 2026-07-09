@@ -1,4 +1,4 @@
-// Core domain types for PharmaOS. These mirror the Supabase/Postgres schema
+// Core domain types for MedCrux. These mirror the Supabase/Postgres schema
 // in db/schema.sql so the local seed layer can be swapped for a real DB later.
 
 export type TopicSlug =

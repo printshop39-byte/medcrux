@@ -1,7 +1,7 @@
 {
-  "name": "PharmaOS — MBBS Pharmacology Study App",
-  "short_name": "PharmaOS",
-  "description": "Exam-focused pharmacology revision app for MBBS students.",
+  "name": "MedCrux — MBBS Exam Revision App",
+  "short_name": "MedCrux",
+  "description": "Short notes, MCQs, viva, flashcards and study plans for MBBS students.",
   "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#f6f8f8",

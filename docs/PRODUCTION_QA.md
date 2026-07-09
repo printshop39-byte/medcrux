@@ -30,7 +30,7 @@ locally (`npm run build && npm start`) and/or a Vercel preview deployment.
 
 ## PWA / offline
 
-- [ ] **PWA installable check** — `app/manifest.webmanifest` is served (visit `/manifest.webmanifest`); name = "PharmaOS — MBBS Pharmacology Study App", `theme_color` = `#256a66`, `display` = `standalone`, icon present. Browser shows an install / "Add to Home Screen" affordance.
+- [ ] **PWA installable check** — `app/manifest.webmanifest` is served (visit `/manifest.webmanifest`); name = "MedCrux — MBBS Exam Revision App", `theme_color` = `#256a66`, `display` = `standalone`, icon present. Browser shows an install / "Add to Home Screen" affordance.
 - [ ] After first load, revision still works with the network offline (state comes from `localStorage`).
 
 ## Regression / data

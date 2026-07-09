@@ -1,4 +1,4 @@
-# PharmaOS 💊
+# MedCrux 💊
 
 A clean, mobile-first study app for **3rd-year MBBS students** revising **Pharmacology** — short exam-focused points, flashcards, MCQs, viva and drug comparison.
 

@@ -1,6 +1,6 @@
-# Deploying PharmaOS
+# Deploying MedCrux
 
-PharmaOS is a standard **Next.js 15** app and deploys to **Vercel** with zero
+MedCrux is a standard **Next.js 15** app and deploys to **Vercel** with zero
 configuration. **No database is required** for the current version.
 
 ---

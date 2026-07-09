@@ -20,7 +20,7 @@ function AiTutorInner() {
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "tutor",
-      text: "👋 Hi! Pick a drug and tap a preset, or type your own question. I answer using your PharmaOS library. Add an API key to enable full Claude answers.",
+      text: "👋 Hi! Pick a drug and tap a preset, or type your own question. I answer using your MedCrux library. Add an API key to enable full Claude answers.",
     },
   ]);
   const [input, setInput] = useState("");

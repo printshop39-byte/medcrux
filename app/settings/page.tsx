@@ -34,7 +34,7 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-slate-800">Settings</h1>
-        <p className="text-sm text-slate-500">Personalise PharmaOS. Data is stored on this device.</p>
+        <p className="text-sm text-slate-500">Personalise MedCrux. Data is stored on this device.</p>
       </div>
 
       <div className="card space-y-4 p-5">

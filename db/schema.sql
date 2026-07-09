@@ -1,5 +1,5 @@
 -- ============================================================================
--- PharmaOS — Supabase / PostgreSQL schema
+-- MedCrux — Supabase / PostgreSQL schema
 -- Run this in the Supabase SQL editor. It creates all tables, enables Row Level
 -- Security, and seeds the topic list. Drug/MCQ/viva seed data can be imported
 -- from lib/*.ts (see db/seed.md) or entered via the Supabase table editor.
