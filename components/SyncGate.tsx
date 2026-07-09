@@ -13,23 +13,27 @@ import { startSync, stopSync, type SyncStatus } from "@/lib/sync/engine";
  */
 export function SyncGate() {
   const { user } = useAuth();
+  const userId = user?.id ?? null;
   const [status, setStatus] = useState<SyncStatus>("idle");
   const [showToast, setShowToast] = useState(false);
 
+  // Depend on the stable user ID, not the user object: Supabase emits new user
+  // objects on every token refresh, and depending on `user` would repeatedly tear
+  // down and rebuild the write-through listener, dropping post-login writes.
   useEffect(() => {
-    if (!CLOUD_SYNC_ENABLED || !user) return;
+    if (!CLOUD_SYNC_ENABLED || !userId) return;
     const supabase = createBrowserSupabase();
     if (!supabase) return;
 
     let active = true;
-    startSync(supabase, user.id, (s) => {
+    startSync(supabase, userId, (s) => {
       if (active) setStatus(s);
     });
     return () => {
       active = false;
       stopSync();
     };
-  }, [user]);
+  }, [userId]);
 
   useEffect(() => {
     if (status === "synced" || status === "migrated") {

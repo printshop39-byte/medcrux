@@ -60,54 +60,76 @@ export async function pullCloud(supabase: SupabaseClient, userId: string): Promi
   };
 }
 
+// Runs one Supabase op and surfaces its error instead of swallowing it, so a
+// single failing table can't silently break sync for that table only.
+async function run(label: string, op: PromiseLike<{ error: unknown }>): Promise<boolean> {
+  const { error } = await op;
+  if (error) {
+    console.warn(`[MedCrux sync] ${label}:`, (error as { message?: string })?.message ?? error);
+    return false;
+  }
+  return true;
+}
+
 // Push the snapshot to Supabase. Collection tables use a replace strategy
 // (delete the user's rows, then insert current) so removals sync too.
+// NOTE: user_study_sessions is intentionally NOT written here — V1 does not
+// record per-day study sessions, so that table stays empty until a future phase.
 export async function pushCloud(supabase: SupabaseClient, userId: string, s: CloudSnapshot): Promise<void> {
-  await supabase.from("user_bookmarks").delete().eq("user_id", userId);
+  await run("user_bookmarks delete", supabase.from("user_bookmarks").delete().eq("user_id", userId));
   if (s.bookmarks.length) {
-    await supabase.from("user_bookmarks").insert(s.bookmarks.map((drug_id) => ({ user_id: userId, drug_id })));
+    await run("user_bookmarks insert", supabase.from("user_bookmarks").insert(s.bookmarks.map((drug_id) => ({ user_id: userId, drug_id }))));
   }
 
-  await supabase.from("user_progress").delete().eq("user_id", userId);
+  await run("user_progress delete", supabase.from("user_progress").delete().eq("user_id", userId));
   if (s.completedTopics.length) {
-    await supabase.from("user_progress").insert(s.completedTopics.map((topic_slug) => ({ user_id: userId, topic_slug, completed: true })));
+    await run("user_progress insert", supabase.from("user_progress").insert(s.completedTopics.map((topic_slug) => ({ user_id: userId, topic_slug, completed: true }))));
   }
 
-  await supabase.from("user_flashcard_reviews").delete().eq("user_id", userId);
+  await run("user_flashcard_reviews delete", supabase.from("user_flashcard_reviews").delete().eq("user_id", userId));
   const fcRows = Object.entries(s.cardDifficulty).map(([card_id, difficulty]) => ({ user_id: userId, card_id, difficulty }));
-  if (fcRows.length) await supabase.from("user_flashcard_reviews").insert(fcRows);
+  if (fcRows.length) await run("user_flashcard_reviews insert", supabase.from("user_flashcard_reviews").insert(fcRows));
 
-  await supabase.from("user_mcq_attempts").delete().eq("user_id", userId);
+  await run("user_mcq_attempts delete", supabase.from("user_mcq_attempts").delete().eq("user_id", userId));
   if (s.mcqHistory.length) {
-    await supabase.from("user_mcq_attempts").insert(
-      s.mcqHistory.map((m) => ({ user_id: userId, attempt_date: m.date, total: m.total, correct: m.correct, topic: m.topic ?? null })),
+    await run(
+      "user_mcq_attempts insert",
+      supabase.from("user_mcq_attempts").insert(
+        s.mcqHistory.map((m) => ({ user_id: userId, attempt_date: m.date, total: m.total, correct: m.correct, topic: m.topic ?? null })),
+      ),
     );
   }
 
-  await supabase.from("user_study_plan_tasks").delete().eq("user_id", userId);
+  await run("user_study_plan_tasks delete", supabase.from("user_study_plan_tasks").delete().eq("user_id", userId));
   const planRows = Object.entries(s.studyPlan).flatMap(([plan_date, tasks]) =>
     tasks.map((task_id) => ({ user_id: userId, plan_date, task_id, done: true })),
   );
-  if (planRows.length) await supabase.from("user_study_plan_tasks").insert(planRows);
+  if (planRows.length) await run("user_study_plan_tasks insert", supabase.from("user_study_plan_tasks").insert(planRows));
 
   // Scalars → user_settings (single-row upsert).
-  await supabase.from("user_settings").upsert({
-    user_id: userId,
-    last_drug: s.lastDrug || null,
-    streak_count: s.streak.count,
-    streak_last_date: s.streak.lastDate || null,
-    last_plan_completed_date: s.lastPlanCompletedDate || null,
-    updated_at: new Date().toISOString(),
-  });
+  await run(
+    "user_settings upsert",
+    supabase.from("user_settings").upsert({
+      user_id: userId,
+      last_drug: s.lastDrug || null,
+      streak_count: s.streak.count,
+      streak_last_date: s.streak.lastDate || null,
+      last_plan_completed_date: s.lastPlanCompletedDate || null,
+      updated_at: new Date().toISOString(),
+    }),
+  );
 
   // Study-relevant profile fields only (does NOT overwrite onboarding identity:
   // full_name / university / onboarded are left untouched).
-  await supabase.from("profiles").upsert({
-    id: userId,
-    exam_date: s.examDate || null,
-    ai_language: s.settings.aiLanguage || "English",
-    updated_at: new Date().toISOString(),
-  });
+  await run(
+    "profiles upsert",
+    supabase.from("profiles").upsert({
+      id: userId,
+      exam_date: s.examDate || null,
+      ai_language: s.settings.aiLanguage || "English",
+      updated_at: new Date().toISOString(),
+    }),
+  );
 }
 
 export async function hasMigrated(supabase: SupabaseClient, userId: string): Promise<boolean> {
