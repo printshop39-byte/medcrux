@@ -102,6 +102,29 @@ work offline from your drug library.
 
 ---
 
+## Cloud Sync / Phase 2
+
+The app **works fully without login and without Supabase** — all study features run
+offline on `localStorage` (V1). Cloud sync (Supabase Auth + cross-device progress) is
+**implemented but flag-gated**, so it stays dormant until you deliberately turn it on.
+
+- **Default:** `NEXT_PUBLIC_CLOUD_SYNC_ENABLED=false` → login is optional, the sync
+  engine is inert, and the app behaves exactly like V1.
+- **Do not enable sync** until the Supabase **SQL migration + RLS policies + auth**
+  (email and Google login, onboarding, account page) are verified working.
+
+**Docs & migration:**
+- [`docs/PHASE2_AUTH_SYNC.md`](docs/PHASE2_AUTH_SYNC.md) — full Phase 2 design (schema, RLS, adapter, migration).
+- [`docs/PHASE2_GOLIVE.md`](docs/PHASE2_GOLIVE.md) — step-by-step go-live runbook + test checklist.
+- [`db/migrations/0002_phase2_auth_sync.sql`](db/migrations/0002_phase2_auth_sync.sql) — run once in Supabase → SQL Editor (tables + RLS).
+
+**Rollback (instant, safe):** set `NEXT_PUBLIC_CLOUD_SYNC_ENABLED=false` → **redeploy**.
+The app returns to **V1 localStorage** behavior — on-device data keeps working and cloud
+data stays untouched. (`NEXT_PUBLIC_*` vars are build-time, so a redeploy is required for
+any flag change.)
+
+---
+
 ## Seed data
 
 38 high-yield drugs across ANS, CVS, CNS, antibiotics, anti-TB, endocrine, NSAIDs
