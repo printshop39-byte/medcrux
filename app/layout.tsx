@@ -9,6 +9,17 @@ export const metadata: Metadata = {
   applicationName: "MedCrux",
   manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, title: "MedCrux", statusBarStyle: "default" },
+  // Explicit icon links so browsers use these instead of falling back to a
+  // missing /favicon.ico. The crisp SVG is preferred; favicon.ico is the legacy
+  // fallback (both live in /public).
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/icon.svg",
+  },
 };
 
 export const viewport: Viewport = {

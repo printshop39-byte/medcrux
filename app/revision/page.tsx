@@ -61,7 +61,7 @@ export default function RevisionPage() {
         <div className="grid gap-2 sm:grid-cols-2">
           {weak.map((d) => (
             <Link key={d.id} href={`/drug/${d.id}`} className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 hover:bg-slate-50">
-              <span className="text-sm font-medium text-slate-700">{d.name}</span>
+              <span className="text-sm font-semibold text-slate-800">{d.name}</span>
               <span className="text-[10px] text-slate-400">{getTopic(d.topic)?.icon} revise →</span>
             </Link>
           ))}
@@ -107,7 +107,7 @@ export default function RevisionPage() {
             <Link key={d.id} href={`/drug/${d.id}`} className="flex items-center justify-between border-b border-slate-100 py-1 text-sm hover:text-brand-700">
               <span className="text-slate-700">
                 <span className="mr-2 text-slate-300">{i + 1}.</span>
-                {d.name}
+                <span className="font-medium text-slate-800">{d.name}</span>
               </span>
               {frequent.has(d.id) && <span className="text-xs text-amber-600">🔁</span>}
             </Link>
@@ -133,7 +133,7 @@ function CrashCard({ topic, label, icon }: { topic: string; label: string; icon:
         <div className="mt-3 space-y-1.5">
           {items.map((it) => (
             <Link key={it.id} href={`/drug/${it.id}`} className="block rounded-lg px-2 py-1.5 hover:bg-slate-50">
-              <div className="text-sm font-medium text-slate-800">
+              <div className="text-sm font-semibold text-slate-800">
                 {it.name} <span className="text-xs font-normal text-brand-600">· {it.drugClass}</span>
               </div>
               <div className="text-xs text-slate-500">{it.keyPoint}</div>

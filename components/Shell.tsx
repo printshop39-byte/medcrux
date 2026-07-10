@@ -58,22 +58,26 @@ export function Shell({ children }: { children: React.ReactNode }) {
       <div className="lg:pl-64">
         {/* Top bar */}
         <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur">
-          <div className="mx-auto flex max-w-4xl items-center gap-3 px-4 py-3">
+          <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
             <div className="flex items-center gap-2 lg:hidden">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-white">
                 ℞
               </div>
               <span className="font-bold text-slate-800">MedCrux</span>
             </div>
-            <div className="flex-1">
-              <SearchBar />
+            {/* Search capped so it doesn't stretch across wide screens; AuthButton
+                is pushed to the right edge by the flex-1 wrapper. */}
+            <div className="min-w-0 flex-1">
+              <div className="max-w-xl">
+                <SearchBar />
+              </div>
             </div>
             <AuthButton />
           </div>
         </header>
 
-        {/* Page content */}
-        <main className="mx-auto max-w-4xl px-4 pb-28 pt-5 lg:pb-12">{children}</main>
+        {/* Page content — wider container so large screens feel less empty. */}
+        <main className="mx-auto max-w-6xl px-4 pb-28 pt-5 sm:px-6 lg:px-8 lg:pb-12">{children}</main>
       </div>
 
       {/* Mobile bottom nav */}
