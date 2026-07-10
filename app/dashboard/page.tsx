@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { gsap } from "gsap";
 import { TOPICS, getTopic } from "@/lib/topics";
 import { DRUGS, getDrug } from "@/lib/drugs";
 import { STATS } from "@/lib/content";
@@ -102,7 +103,7 @@ export default function DashboardPage() {
           label="Study streak"
           value={
             <>
-              {streak}
+              <CountUp value={streak} />
               <span className={`flame ${streak > 0 ? "flame-active" : ""} ${streak >= 7 ? "flame-gold" : ""}`}>🔥</span>
             </>
           }
@@ -318,12 +319,43 @@ function MiniStat({ n, label }: { n: number; label: string }) {
 // Lightweight circular progress ring — pure SVG, no animation library.
 // The foreground arc animates via a CSS transition on stroke-dashoffset; the
 // percentage renders as visible text with an aria-label for screen readers.
+// Counts a value up from 0 to `target` with GSAP on mount / when the target
+// changes. Respects prefers-reduced-motion (jumps straight to the value).
+function useCountUp(target: number, duration = 1.1): number {
+  const [value, setValue] = useState(0);
+  const stateRef = useRef({ v: 0 });
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setValue(target);
+      return;
+    }
+    const obj = stateRef.current;
+    const tween = gsap.to(obj, {
+      v: target,
+      duration,
+      ease: "power2.out",
+      onUpdate: () => setValue(obj.v),
+    });
+    return () => {
+      tween.kill();
+    };
+  }, [target, duration]);
+  return value;
+}
+
+function CountUp({ value }: { value: number }) {
+  const shown = useCountUp(value);
+  return <>{Math.round(shown)}</>;
+}
+
 function ProgressRing({ percent, size = 54 }: { percent: number; size?: number }) {
+  const shown = useCountUp(percent); // GSAP-driven: arc + number count up together
   const stroke = Math.max(4, Math.round(size * 0.095));
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
-  const clamped = Math.max(0, Math.min(100, Math.round(percent)));
-  const offset = c - (clamped / 100) * c;
+  const value = Math.max(0, Math.min(100, shown));
+  const clamped = Math.round(value);
+  const offset = c - (value / 100) * c;
   const center = size / 2;
   const fontSize = Math.round(size * 0.24);
   return (
@@ -346,7 +378,7 @@ function ProgressRing({ percent, size = 54 }: { percent: number; size?: number }
         strokeDasharray={c}
         strokeDashoffset={offset}
         transform={`rotate(-90 ${center} ${center})`}
-        className="stroke-brand-500 transition-[stroke-dashoffset] duration-700 ease-out motion-reduce:transition-none"
+        className="stroke-brand-500"
       />
       <text
         x={center}

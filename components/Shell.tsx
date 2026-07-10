@@ -7,6 +7,7 @@ import { SearchBar } from "./SearchBar";
 import { ShortcutOverlay } from "./ShortcutOverlay";
 import { AuthButton } from "./AuthButton";
 import { SyncGate } from "./SyncGate";
+import { SmoothScroll } from "./SmoothScroll";
 
 // Static classes so Tailwind keeps them; keyed by number of mobile nav items.
 const MOBILE_GRID: Record<number, string> = {
@@ -100,6 +101,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
       {/* Global page-aware keyboard shortcuts overlay (press ?) */}
       <ShortcutOverlay />
+
+      {/* App-wide smooth scrolling (Lenis; disabled under reduced-motion) */}
+      <SmoothScroll />
 
       {/* Cloud sync (only active when flag on AND signed in) */}
       <SyncGate />

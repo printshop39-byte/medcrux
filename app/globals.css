@@ -41,6 +41,22 @@ body {
   scrollbar-width: none;
 }
 
+/* Lenis smooth scroll (recommended base styles). Sticky header & fixed bottom
+   nav keep working because Lenis 1.x drives native scroll, not a transform. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
 /* Streak flame — subtle pulse when streak > 0, golden glow at a 7+ day streak.
    Pure CSS; respects prefers-reduced-motion. */
 @keyframes flame-pulse {
