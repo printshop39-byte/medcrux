@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV } from "@/lib/nav";
@@ -10,17 +11,21 @@ import { SyncGate } from "./SyncGate";
 import { SmoothScroll } from "./SmoothScroll";
 import { ThemeToggle } from "./ThemeToggle";
 
-// Static classes so Tailwind keeps them; keyed by number of mobile nav items.
-const MOBILE_GRID: Record<number, string> = {
-  5: "grid-cols-5",
-  6: "grid-cols-6",
-};
+// The 5 primary destinations in the mobile bottom bar; everything else lives in
+// the "More" sheet so every page is reachable on mobile.
+const MOBILE_PRIMARY = ["/dashboard", "/topics", "/flashcards", "/exam", "/ai-tutor"];
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isActive = (href: string) =>
     pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
-  const mobileItems = NAV.filter((n) => n.mobile);
+  const [moreOpen, setMoreOpen] = useState(false);
+
+  const primaryItems = MOBILE_PRIMARY.map((href) => NAV.find((n) => n.href === href)).filter(
+    (n): n is (typeof NAV)[number] => Boolean(n),
+  );
+  const moreItems = NAV.filter((n) => !MOBILE_PRIMARY.includes(n.href));
+  const moreActive = moreItems.some((n) => isActive(n.href));
 
   return (
     <div className="min-h-screen">
@@ -93,13 +98,47 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <main className="mx-auto max-w-6xl px-4 pb-28 pt-5 sm:px-6 lg:px-8 lg:pb-12">{children}</main>
       </div>
 
-      {/* Mobile bottom nav */}
+      {/* Mobile "More" sheet — every non-primary page is reachable here. */}
+      {moreOpen && (
+        <div className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-modal="true">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setMoreOpen(false)} />
+          <div className="absolute inset-x-0 bottom-0 rounded-t-2xl border-t border-slate-200 bg-white p-4 pb-6 shadow-2xl">
+            <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-slate-200" />
+            <div className="mb-3 flex items-center justify-between">
+              <span className="section-title">More</span>
+              <button onClick={() => setMoreOpen(false)} className="text-sm text-slate-400 hover:text-slate-600">
+                Close ✕
+              </button>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {moreItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMoreOpen(false)}
+                  className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center text-xs font-medium transition ${
+                    isActive(item.href)
+                      ? "border-brand-500 bg-brand-50 text-brand-700"
+                      : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                  }`}
+                >
+                  <span className="text-xl">{item.icon}</span>
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile bottom nav — 5 primary destinations + More */}
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white lg:hidden">
-        <div className={`mx-auto grid max-w-lg ${MOBILE_GRID[mobileItems.length] ?? "grid-cols-5"}`}>
-          {mobileItems.map((item) => (
+        <div className="mx-auto grid max-w-lg grid-cols-6">
+          {primaryItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => setMoreOpen(false)}
               className={`flex flex-col items-center gap-0.5 py-2.5 text-center text-[10px] font-medium leading-tight ${
                 isActive(item.href) ? "text-brand-600" : "text-slate-400"
               }`}
@@ -108,6 +147,17 @@ export function Shell({ children }: { children: React.ReactNode }) {
               {item.label}
             </Link>
           ))}
+          <button
+            onClick={() => setMoreOpen((o) => !o)}
+            aria-label="More pages"
+            aria-expanded={moreOpen}
+            className={`flex flex-col items-center gap-0.5 py-2.5 text-center text-[10px] font-medium leading-tight ${
+              moreOpen || moreActive ? "text-brand-600" : "text-slate-400"
+            }`}
+          >
+            <span className="text-lg">☰</span>
+            More
+          </button>
         </div>
       </nav>
 
