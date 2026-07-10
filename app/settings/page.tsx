@@ -1,17 +1,33 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getSettings, saveSettings, getExamDate, setExamDate, Settings } from "@/lib/store";
+import {
+  getSettings,
+  saveSettings,
+  getExamDate,
+  setExamDate,
+  getTheme,
+  setTheme,
+  Settings,
+  ThemeMode,
+} from "@/lib/store";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<Settings>({ name: "", university: "", aiLanguage: "English" });
   const [exam, setExam] = useState("");
+  const [theme, setThemeState] = useState<ThemeMode>("system");
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     setSettings(getSettings());
     setExam(getExamDate());
+    setThemeState(getTheme());
   }, []);
+
+  function changeTheme(t: ThemeMode) {
+    setThemeState(t);
+    setTheme(t); // persists + applies to <html> immediately
+  }
 
   function save() {
     saveSettings(settings);
@@ -42,7 +58,7 @@ export default function SettingsPage() {
           <input
             value={settings.name}
             onChange={(e) => setSettings({ ...settings, name: e.target.value })}
-            className="input"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-brand-500"
             placeholder="e.g. Ivan"
           />
         </Field>
@@ -50,18 +66,18 @@ export default function SettingsPage() {
           <input
             value={settings.university}
             onChange={(e) => setSettings({ ...settings, university: e.target.value })}
-            className="input"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-brand-500"
             placeholder="e.g. Kazan State Medical University"
           />
         </Field>
         <Field label="Exam date (for countdown)">
-          <input type="date" value={exam} onChange={(e) => setExam(e.target.value)} className="input" />
+          <input type="date" value={exam} onChange={(e) => setExam(e.target.value)} className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-brand-500" />
         </Field>
         <Field label="AI Tutor language">
           <select
             value={settings.aiLanguage}
             onChange={(e) => setSettings({ ...settings, aiLanguage: e.target.value as "English" | "Russian" })}
-            className="input"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-brand-500"
           >
             <option>English</option>
             <option>Russian</option>
@@ -72,6 +88,29 @@ export default function SettingsPage() {
           <button onClick={save} className="btn-primary">Save settings</button>
           {saved && <span className="text-sm text-green-600">✓ Saved</span>}
         </div>
+      </div>
+
+      <div className="card p-5">
+        <div className="section-title mb-3">Appearance</div>
+        <div className="grid grid-cols-3 gap-2">
+          {(["light", "dark", "system"] as const).map((t) => (
+            <button
+              key={t}
+              onClick={() => changeTheme(t)}
+              aria-pressed={theme === t}
+              className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition ${
+                theme === t
+                  ? "border-brand-500 bg-brand-50 text-brand-700 ring-1 ring-brand-500"
+                  : "border-slate-200 text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              {t === "light" ? "☀️ Light" : t === "dark" ? "🌙 Dark" : "🖥️ System"}
+            </button>
+          ))}
+        </div>
+        <p className="mt-2 text-[11px] text-slate-400">
+          “System” follows your device’s light/dark setting.
+        </p>
       </div>
 
       <div className="card p-5">
@@ -89,20 +128,6 @@ export default function SettingsPage() {
           Reset all local data
         </button>
       </div>
-
-      <style jsx>{`
-        .input {
-          width: 100%;
-          border-radius: 0.75rem;
-          border: 1px solid rgb(226 232 240);
-          padding: 0.6rem 0.75rem;
-          font-size: 0.875rem;
-          outline: none;
-        }
-        .input:focus {
-          border-color: rgb(37 106 102);
-        }
-      `}</style>
     </div>
   );
 }

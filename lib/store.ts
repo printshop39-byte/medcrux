@@ -20,6 +20,7 @@ const KEYS = {
   lastPlanCompleted: "pharmaos.last-plan-completed-date",
   subjectMcq: "pharmaos.subjectMcq",
   vivaDone: "pharmaos.vivaDone",
+  theme: "pharmaos.theme",
 };
 
 function read<T>(key: string, fallback: T): T {
@@ -204,6 +205,31 @@ export function toggleVivaDone(topicSlug: string, index: number) {
   cur[topicSlug] = arr.includes(index) ? arr.filter((i) => i !== index) : [...arr, index];
   write(KEYS.vivaDone, cur);
   markStudiedToday();
+}
+
+// ── Theme (light / dark / system) ────────────────────────────
+export type ThemeMode = "light" | "dark" | "system";
+
+export function getTheme(): ThemeMode {
+  return read<ThemeMode>(KEYS.theme, "system");
+}
+
+// Apply the resolved theme to <html> (adds/removes `.dark` + sets data-theme).
+export function applyTheme(theme: ThemeMode) {
+  if (typeof document === "undefined") return;
+  const dark =
+    theme === "dark" ||
+    (theme === "system" &&
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const el = document.documentElement;
+  el.classList.toggle("dark", dark);
+  el.setAttribute("data-theme", dark ? "dark" : "light");
+}
+
+export function setTheme(theme: ThemeMode) {
+  write(KEYS.theme, theme);
+  applyTheme(theme);
 }
 
 // ── React hook to re-render on store changes ─────────────────

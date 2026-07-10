@@ -7,6 +7,12 @@ import { NextRequest, NextResponse } from "next/server";
 // Uses the Anthropic Messages REST API directly (no SDK dependency needed).
 // Default model: claude-sonnet-5 (fast + capable for study explanations).
 
+// Cheap status probe for the client banner — returns only a boolean, never the
+// key. Lets the UI show "AI enhanced" vs "offline" without spending an AI call.
+export async function GET() {
+  return NextResponse.json({ configured: Boolean(process.env.ANTHROPIC_API_KEY) });
+}
+
 export async function POST(req: NextRequest) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {

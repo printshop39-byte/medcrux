@@ -2,6 +2,10 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Shell } from "@/components/Shell";
 import { AuthProvider } from "@/components/AuthProvider";
+import { ThemeInit } from "@/components/ThemeInit";
+
+// Runs before paint to set the theme class (no flash of the wrong theme).
+const themeScript = `(function(){try{var t=localStorage.getItem('pharmaos.theme');t=t?JSON.parse(t):'system';var d=t==='dark'||(t!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var e=document.documentElement;e.classList.toggle('dark',d);e.setAttribute('data-theme',d?'dark':'light');}catch(x){}})();`;
 
 export const metadata: Metadata = {
   title: "MedCrux — MBBS Exam Revision App",
@@ -31,8 +35,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <ThemeInit />
         <AuthProvider>
           <Shell>{children}</Shell>
         </AuthProvider>

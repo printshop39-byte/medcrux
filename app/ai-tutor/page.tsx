@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { PRESETS, Preset, localAnswer, ALL_DRUGS_MIN } from "@/lib/tutor";
 import { getDrug } from "@/lib/drugs";
@@ -20,11 +20,21 @@ function AiTutorInner() {
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "tutor",
-      text: "👋 Hi! Pick a drug and tap a preset, or type your own question. I answer using your MedCrux library. Add an API key to enable full Claude answers.",
+      text: "👋 Hi! Pick a drug and tap a preset, or type your own question — I answer from your MedCrux study library.",
     },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Whether the server-side AI is configured (never involves any key on the
+  // client). Probed once via a cheap GET so we can show the right mode banner.
+  const [aiEnhanced, setAiEnhanced] = useState(false);
+  useEffect(() => {
+    fetch("/api/tutor")
+      .then((r) => r.json())
+      .then((d) => setAiEnhanced(Boolean(d?.configured)))
+      .catch(() => {});
+  }, []);
 
   async function run(preset: Preset) {
     const d = getDrug(drugA);
@@ -70,10 +80,10 @@ function AiTutorInner() {
       else
         push(
           "tutor",
-          "💡 Free-text answers need a connected API key. For now, use the preset buttons above — they work offline from your drug library. (See README to add ANTHROPIC_API_KEY.)",
+          "💡 Typed questions are answered in AI-enhanced mode. For now, tap a preset above — those answer instantly from your MedCrux study library.",
         );
     } catch {
-      push("tutor", "Network error. Preset buttons still work offline.");
+      push("tutor", "Network hiccup — the preset buttons above still answer from your library.");
     }
     setLoading(false);
   }
@@ -87,6 +97,19 @@ function AiTutorInner() {
       <div>
         <h1 className="text-2xl font-bold text-slate-800">AI Tutor</h1>
         <p className="text-sm text-slate-500">Quick explanations, comparisons, viva & MCQs from your library.</p>
+      </div>
+
+      {/* Mode banner — offline by default, "AI enhanced" if the server AI is on.
+          Never asks the student for a key. */}
+      <div
+        className={`flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium ${
+          aiEnhanced ? "bg-brand-50 text-brand-700" : "bg-emerald-50 text-emerald-700"
+        }`}
+      >
+        <span>{aiEnhanced ? "⚡" : "✅"}</span>
+        {aiEnhanced
+          ? "AI enhanced mode active."
+          : "Offline tutor active — answers use your MedCrux study library."}
       </div>
 
       {/* Drug selectors */}
@@ -140,8 +163,8 @@ function AiTutorInner() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && ask()}
-          placeholder="Ask anything… (needs API key for free text)"
-          className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm outline-none"
+          placeholder="Ask anything, or tap a preset above…"
+          className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-800 outline-none"
         />
         <button onClick={ask} disabled={loading} className="btn-primary">Send</button>
       </div>

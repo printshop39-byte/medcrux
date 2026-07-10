@@ -277,6 +277,34 @@ export default function DashboardPage() {
           <MiniStat n={STATS.vivaCount} label="Viva Qs" />
         </div>
       </div>
+
+      {/* Latest Medical Reads — trusted external reading (not exam content). */}
+      <div className="card p-5">
+        <div className="section-title mb-2">📰 Latest Medical Reads</div>
+        <p className="mb-3 text-sm text-slate-500">
+          Open-access European medical research and public health updates. Trusted reading, not exam content.
+        </p>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <a
+            href="https://www.thelancet.com/journals/lanepe/home"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-ghost flex-1 justify-between"
+          >
+            <span>🩺 The Lancet Regional Health – Europe</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+          <a
+            href="https://www.thelancet.com/journals/lanepe/onlinefirst"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-ghost flex-1 justify-between"
+          >
+            <span>📄 Latest articles (Online First)</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { TOPICS } from "@/lib/topics";
+import { getMicroOverall } from "@/lib/micro-progress";
+import { getPathOverall } from "@/lib/path-progress";
+import { getClinicalOverall } from "@/lib/clinical-progress";
 import {
   getCompletedTopics,
   getMCQHistory,
@@ -55,11 +59,23 @@ export default function ProgressPage() {
   ];
   const earnedBadges = badges.filter((b) => b.earned).length;
 
+  // ── Coaching signals (presentation only; no new data) ──
+  const micro = mounted ? getMicroOverall() : null;
+  const path = mounted ? getPathOverall() : null;
+  const clinical = mounted ? getClinicalOverall() : null;
+  const readiness = Math.round(
+    (topicProgress + (micro?.percent ?? 0) + (path?.percent ?? 0) + (clinical?.percent ?? 0)) / 4,
+  );
+  const weakList = TOPICS.filter((t) => !completed.includes(t.slug));
+  const nextTopic = weakList[0];
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-800">Progress Tracker</h1>
-        <p className="text-sm text-slate-500">Topics, MCQ accuracy, flashcard difficulty and streak.</p>
+        <h1 className="text-2xl font-bold text-slate-800">Your Progress</h1>
+        <p className="text-sm text-slate-500">
+          You&apos;re doing great — small steps every day add up. Finish one topic today to improve your readiness.
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -75,6 +91,64 @@ export default function ProgressPage() {
             </>
           }
         />
+      </div>
+
+      {/* Coaching: readiness + today's focus */}
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="card p-5">
+          <div className="section-title mb-2">🎯 Readiness score</div>
+          <div className="flex items-end gap-2">
+            <span className="text-4xl font-bold text-brand-700">{readiness}%</span>
+            <span className="mb-1 text-xs text-slate-500">across all 4 subjects</span>
+          </div>
+          <div className="mt-3">
+            <Bar pct={readiness} />
+          </div>
+          <p className="mt-2 text-[11px] text-slate-400">Finish one topic today to improve your readiness.</p>
+        </div>
+
+        <div className="card p-5">
+          <div className="section-title mb-2">📌 Today&apos;s focus</div>
+          {nextTopic ? (
+            <>
+              <Link
+                href={`/topics/${nextTopic.slug}`}
+                className="flex items-center gap-3 rounded-xl bg-brand-50 p-3 transition hover:bg-brand-100"
+              >
+                <span className="text-2xl">{nextTopic.icon}</span>
+                <div>
+                  <div className="text-sm font-semibold text-slate-800">{nextTopic.title}</div>
+                  <div className="text-xs text-slate-500">Your next best topic — start here.</div>
+                </div>
+              </Link>
+              <p className="mt-2 text-[11px] text-slate-400">One focused topic beats an hour of scrolling.</p>
+            </>
+          ) : (
+            <p className="text-sm text-slate-500">🎉 All pharmacology topics done! Keep sharp with a random test.</p>
+          )}
+        </div>
+      </div>
+
+      {/* Weak topics — gentle nudges, not a scolding list */}
+      <div className="card p-5">
+        <div className="section-title mb-2">🌱 Topics to revise</div>
+        {weakList.length === 0 ? (
+          <p className="text-sm text-slate-500">Nothing pending — every topic is complete. Great work! 🎉</p>
+        ) : (
+          <div className="grid gap-2 sm:grid-cols-2">
+            {weakList.slice(0, 6).map((t) => (
+              <Link
+                key={t.slug}
+                href={`/topics/${t.slug}`}
+                className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 transition hover:bg-slate-50"
+              >
+                <span>{t.icon}</span>
+                <span className="text-sm text-slate-700">{t.title}</span>
+                <span className="ml-auto text-[11px] text-slate-400">start →</span>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Achievements — derived from existing progress data (no new storage). */}
@@ -101,7 +175,7 @@ export default function ProgressPage() {
                 <span className="flex items-center gap-2 text-slate-700">
                   <span>{t.icon}</span> {t.title}
                 </span>
-                <span className={done ? "text-green-600" : "text-slate-300"}>{done ? "✓ done" : "pending"}</span>
+                <span className={done ? "text-green-600" : "text-slate-400"}>{done ? "✓ done" : "○ to revise"}</span>
               </div>
             );
           })}
