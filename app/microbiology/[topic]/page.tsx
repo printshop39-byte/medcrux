@@ -4,39 +4,97 @@ import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getMicroTopic, MicroFlashcard } from "@/lib/microbiology";
+import { getMicroTopicProgress, microFlashcardId } from "@/lib/micro-progress";
 import { MCQBlock } from "@/components/MCQBlock";
-import { getCompletedTopics, toggleTopicComplete, markStudiedToday, useStoreTick } from "@/lib/store";
+import {
+  getCompletedTopics,
+  toggleTopicComplete,
+  markStudiedToday,
+  recordSubjectMCQ,
+  isVivaDone,
+  toggleVivaDone,
+  getCardDifficulty,
+  setCardDifficulty,
+  useStoreTick,
+} from "@/lib/store";
 
-function VivaItem({ q, a }: { q: string; a: string }) {
+function VivaItem({ topicSlug, index, q, a }: { topicSlug: string; index: number; q: string; a: string }) {
+  useStoreTick();
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const done = mounted && isVivaDone(topicSlug, index);
+
   return (
-    <button
-      onClick={() => setOpen((o) => !o)}
-      className="w-full rounded-xl border border-slate-200 p-3 text-left transition hover:bg-slate-50"
-    >
-      <div className="flex items-start justify-between gap-2">
+    <div className={`rounded-xl border p-3 transition ${done ? "border-emerald-300 bg-emerald-50/40" : "border-slate-200"}`}>
+      <button onClick={() => setOpen((o) => !o)} className="flex w-full items-start justify-between gap-2 text-left">
         <span className="text-sm font-medium text-slate-800">{q}</span>
         <span className="mt-0.5 shrink-0 text-xs text-slate-400">{open ? "− hide" : "+ answer"}</span>
-      </div>
-      {open && <p className="mt-2 text-sm text-slate-600">{a}</p>}
-    </button>
+      </button>
+      {open && (
+        <>
+          <p className="mt-2 text-sm text-slate-600">{a}</p>
+          <button
+            onClick={() => toggleVivaDone(topicSlug, index)}
+            className={`mt-2 rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+              done ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+            }`}
+          >
+            {done ? "✓ Got it" : "Mark as known"}
+          </button>
+        </>
+      )}
+    </div>
   );
 }
 
-function FlashcardItem({ card }: { card: MicroFlashcard }) {
+function FlashcardItem({ topicSlug, index, card }: { topicSlug: string; index: number; card: MicroFlashcard }) {
+  useStoreTick();
   const [revealed, setRevealed] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const id = microFlashcardId(topicSlug, index);
+  const difficulty = mounted ? getCardDifficulty()[id] : undefined;
+
   return (
-    <button
-      onClick={() => setRevealed((r) => !r)}
-      className="min-h-[92px] w-full rounded-xl border border-brand-200 bg-brand-50/40 p-3 text-left transition hover:bg-brand-50"
+    <div
+      className={`min-h-[92px] rounded-xl border p-3 transition ${
+        difficulty === "easy"
+          ? "border-emerald-300 bg-emerald-50/40"
+          : difficulty === "hard"
+            ? "border-rose-300 bg-rose-50/40"
+            : "border-brand-200 bg-brand-50/40"
+      }`}
     >
-      <div className="text-sm font-semibold text-slate-800">{card.front}</div>
-      {revealed ? (
-        <p className="mt-2 text-sm text-slate-600">{card.back}</p>
-      ) : (
-        <p className="mt-2 text-xs text-slate-400">Tap to reveal answer</p>
+      <button onClick={() => setRevealed((r) => !r)} className="w-full text-left">
+        <div className="text-sm font-semibold text-slate-800">{card.front}</div>
+        {revealed ? (
+          <p className="mt-2 text-sm text-slate-600">{card.back}</p>
+        ) : (
+          <p className="mt-2 text-xs text-slate-400">Tap to reveal answer</p>
+        )}
+      </button>
+      {revealed && (
+        <div className="mt-2 flex gap-2">
+          <button
+            onClick={() => setCardDifficulty(id, "easy")}
+            className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+              difficulty === "easy" ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+            }`}
+          >
+            😌 Easy
+          </button>
+          <button
+            onClick={() => setCardDifficulty(id, "hard")}
+            className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+              difficulty === "hard" ? "bg-rose-100 text-rose-700" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+            }`}
+          >
+            😓 Hard
+          </button>
+        </div>
       )}
-    </button>
+    </div>
   );
 }
 
@@ -55,6 +113,7 @@ export default function MicroTopicPage({ params }: { params: Promise<{ topic: st
   }, [slug]);
 
   const done = mounted ? getCompletedTopics().includes(slug) : false;
+  const progress = mounted ? getMicroTopicProgress().find((p) => p.slug === slug) : undefined;
 
   return (
     <div className="space-y-6">
@@ -90,6 +149,24 @@ export default function MicroTopicPage({ params }: { params: Promise<{ topic: st
           </span>
         )}
       </div>
+
+      {/* Topic progress */}
+      {progress && (
+        <div className="card p-4">
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-medium text-slate-600">Your progress on this topic</span>
+            <span className="font-bold text-brand-700">{progress.percent}%</span>
+          </div>
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-200">
+            <div className="h-full rounded-full bg-brand-500 transition-all" style={{ width: `${progress.percent}%` }} />
+          </div>
+          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-500">
+            <span>MCQ: {progress.mcqAttempted ? `${progress.mcqCorrect}/${progress.mcqAttempted}` : "not attempted"}</span>
+            <span>Viva known: {progress.vivaDone}/{progress.vivaTotal}</span>
+            <span>Cards easy: {progress.cardsMastered}/{progress.cardsTotal}</span>
+          </div>
+        </div>
+      )}
 
       {/* Easy notes — "Explain like I'm tired" */}
       <section className="card p-5">
@@ -145,7 +222,7 @@ export default function MicroTopicPage({ params }: { params: Promise<{ topic: st
         </h2>
         <div className="space-y-2">
           {topic.viva.map((v, i) => (
-            <VivaItem key={i} q={v.q} a={v.a} />
+            <VivaItem key={i} topicSlug={slug} index={i} q={v.q} a={v.a} />
           ))}
         </div>
       </section>
@@ -157,7 +234,7 @@ export default function MicroTopicPage({ params }: { params: Promise<{ topic: st
         </h2>
         <div className="space-y-3">
           {topic.mcqs.map((m) => (
-            <MCQBlock key={m.id} mcq={m} />
+            <MCQBlock key={m.id} mcq={m} onAnswer={(correct) => recordSubjectMCQ(slug, correct)} />
           ))}
         </div>
       </section>
@@ -169,7 +246,7 @@ export default function MicroTopicPage({ params }: { params: Promise<{ topic: st
         </h2>
         <div className="grid gap-2 sm:grid-cols-2">
           {topic.flashcards.map((c, i) => (
-            <FlashcardItem key={i} card={c} />
+            <FlashcardItem key={i} topicSlug={slug} index={i} card={c} />
           ))}
         </div>
       </section>

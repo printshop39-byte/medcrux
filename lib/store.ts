@@ -18,6 +18,8 @@ const KEYS = {
   lastDrug: "pharmaos.lastDrug",
   settings: "pharmaos.settings",
   lastPlanCompleted: "pharmaos.last-plan-completed-date",
+  subjectMcq: "pharmaos.subjectMcq",
+  vivaDone: "pharmaos.vivaDone",
 };
 
 function read<T>(key: string, fallback: T): T {
@@ -169,6 +171,39 @@ export function getSettings(): Settings {
 }
 export function saveSettings(s: Settings) {
   write(KEYS.settings, s);
+}
+
+// ── Subject MCQ scoring (subject-agnostic, keyed by topic slug) ──────────────
+// Used by the Microbiology module (and future subjects) to keep a running
+// attempted/correct tally per topic — feeds per-subject readiness scoring.
+export interface MCQScore {
+  attempted: number;
+  correct: number;
+}
+export function getSubjectMCQScores(): Record<string, MCQScore> {
+  return read<Record<string, MCQScore>>(KEYS.subjectMcq, {});
+}
+export function recordSubjectMCQ(topicSlug: string, correct: boolean) {
+  const cur = getSubjectMCQScores();
+  const s = cur[topicSlug] ?? { attempted: 0, correct: 0 };
+  cur[topicSlug] = { attempted: s.attempted + 1, correct: s.correct + (correct ? 1 : 0) };
+  write(KEYS.subjectMcq, cur);
+  markStudiedToday();
+}
+
+// ── Viva "got it" tracking (keyed by topic slug → list of item indices) ──────
+export function getVivaDone(): Record<string, number[]> {
+  return read<Record<string, number[]>>(KEYS.vivaDone, {});
+}
+export function isVivaDone(topicSlug: string, index: number): boolean {
+  return (getVivaDone()[topicSlug] ?? []).includes(index);
+}
+export function toggleVivaDone(topicSlug: string, index: number) {
+  const cur = getVivaDone();
+  const arr = cur[topicSlug] ?? [];
+  cur[topicSlug] = arr.includes(index) ? arr.filter((i) => i !== index) : [...arr, index];
+  write(KEYS.vivaDone, cur);
+  markStudiedToday();
 }
 
 // ── React hook to re-render on store changes ─────────────────

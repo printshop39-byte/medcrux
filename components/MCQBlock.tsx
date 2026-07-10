@@ -3,9 +3,21 @@
 import { useState } from "react";
 import { MCQ } from "@/lib/types";
 
-export function MCQBlock({ mcq }: { mcq: MCQ }) {
+export function MCQBlock({
+  mcq,
+  onAnswer,
+}: {
+  mcq: MCQ;
+  onAnswer?: (correct: boolean) => void;
+}) {
   const [selected, setSelected] = useState<number | null>(null);
   const answered = selected !== null;
+
+  function choose(i: number) {
+    if (answered) return; // record only the first answer
+    setSelected(i);
+    onAnswer?.(i === mcq.answerIndex);
+  }
 
   return (
     <div className="rounded-xl border border-slate-200 p-4">
@@ -21,7 +33,7 @@ export function MCQBlock({ mcq }: { mcq: MCQ }) {
             <button
               key={i}
               disabled={answered}
-              onClick={() => setSelected(i)}
+              onClick={() => choose(i)}
               className={`flex w-full items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition ${cls}`}
             >
               <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-current text-[11px]">

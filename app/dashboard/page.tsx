@@ -5,6 +5,8 @@ import Link from "next/link";
 import { TOPICS, getTopic } from "@/lib/topics";
 import { DRUGS, getDrug } from "@/lib/drugs";
 import { STATS } from "@/lib/content";
+import { MICRO_STATS } from "@/lib/microbiology";
+import { getMicroOverall } from "@/lib/micro-progress";
 import {
   getCompletedTopics,
   getStreak,
@@ -36,7 +38,10 @@ export default function DashboardPage() {
   useEffect(() => setMounted(true), []);
 
   const completed = mounted ? getCompletedTopics() : [];
-  const progress = Math.round((completed.length / TOPICS.length) * 100);
+  // completedTopics is shared across subjects (pharma slugs + micro-* slugs), so
+  // count only slugs that belong to Pharmacology for the pharma progress figure.
+  const pharmaCompleted = completed.filter((s) => TOPICS.some((t) => t.slug === s));
+  const progress = Math.round((pharmaCompleted.length / TOPICS.length) * 100);
   const streak = mounted ? getStreak() : 0;
   const examDays = daysUntil(mounted ? getExamDate() : "");
   const lastDrugId = mounted ? getLastDrug() : "";
@@ -50,6 +55,9 @@ export default function DashboardPage() {
   const totalQ = history.reduce((s, h) => s + h.total, 0);
   const totalC = history.reduce((s, h) => s + h.correct, 0);
   const accuracy = totalQ ? Math.round((totalC / totalQ) * 100) : 0;
+
+  // Microbiology subject progress (multi-subject dashboard).
+  const micro = mounted ? getMicroOverall() : null;
 
   // Today's study-plan checklist (per-day, resets each new day).
   const planDone = Math.min(mounted ? getStudyPlanDone().length : 0, STUDY_PLAN_TASK_COUNT);
@@ -66,7 +74,7 @@ export default function DashboardPage() {
 
       {/* Stat row */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Progress" value={`${progress}%`} sub={`${completed.length}/${TOPICS.length} topics`} />
+        <StatCard label="Progress" value={`${progress}%`} sub={`${pharmaCompleted.length}/${TOPICS.length} topics`} />
         <StatCard label="Study streak" value={`${streak}🔥`} sub="days in a row" />
         <StatCard
           label="Exam in"
@@ -74,6 +82,60 @@ export default function DashboardPage() {
           sub={examDays === null ? "set in Settings" : "days left"}
         />
         <StatCard label="MCQ accuracy" value={`${accuracy}%`} sub={`${totalQ} attempted`} />
+      </div>
+
+      {/* Subjects */}
+      <div>
+        <div className="section-title mb-2">Subjects</div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {/* Pharmacology */}
+          <Link href="/topics" className="card p-4 transition hover:shadow-md">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">📚</span>
+                <div>
+                  <div className="font-semibold text-slate-800">Pharmacology</div>
+                  <div className="text-[11px] text-slate-400">K.D. Tripathi</div>
+                </div>
+              </div>
+              <span className="text-lg font-bold text-brand-700">{progress}%</span>
+            </div>
+            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-200">
+              <div className="h-full rounded-full bg-brand-500 transition-all" style={{ width: `${progress}%` }} />
+            </div>
+            <div className="mt-2 text-[11px] text-slate-400">
+              {pharmaCompleted.length}/{TOPICS.length} topics · {STATS.drugCount} drugs · Continue →
+            </div>
+          </Link>
+
+          {/* Microbiology */}
+          <Link href="/microbiology" className="card p-4 transition hover:shadow-md">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🧫</span>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-semibold text-slate-800">Microbiology</span>
+                    <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700">
+                      NEW
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-slate-400">Paniker · Smolensk lectures</div>
+                </div>
+              </div>
+              <span className="text-lg font-bold text-brand-700">{micro ? `${micro.percent}%` : "—"}</span>
+            </div>
+            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-200">
+              <div
+                className="h-full rounded-full bg-brand-500 transition-all"
+                style={{ width: `${micro?.percent ?? 0}%` }}
+              />
+            </div>
+            <div className="mt-2 text-[11px] text-slate-400">
+              {MICRO_STATS.topicCount} topics · {MICRO_STATS.mcqCount} MCQs · {MICRO_STATS.vivaCount} viva · Start →
+            </div>
+          </Link>
+        </div>
       </div>
 
       {/* Today's study plan progress */}

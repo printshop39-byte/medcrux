@@ -22,7 +22,9 @@ export default function ProgressPage() {
   const diffs = mounted ? getCardDifficulty() : {};
   const streak = mounted ? getStreak() : 0;
 
-  const topicProgress = Math.round((completed.length / TOPICS.length) * 100);
+  // completedTopics is shared across subjects; count only Pharmacology slugs here.
+  const pharmaCompleted = completed.filter((s) => TOPICS.some((t) => t.slug === s));
+  const topicProgress = Math.round((pharmaCompleted.length / TOPICS.length) * 100);
 
   const totalQ = history.reduce((s, h) => s + h.total, 0);
   const totalC = history.reduce((s, h) => s + h.correct, 0);
@@ -42,7 +44,7 @@ export default function ProgressPage() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat label="Topics done" value={`${completed.length}/${TOPICS.length}`} />
+        <Stat label="Topics done" value={`${pharmaCompleted.length}/${TOPICS.length}`} />
         <Stat label="MCQ accuracy" value={`${accuracy}%`} />
         <Stat label="Tests taken" value={`${history.length}`} />
         <Stat label="Streak" value={`${streak}🔥`} />

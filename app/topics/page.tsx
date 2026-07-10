@@ -5,6 +5,7 @@ import Link from "next/link";
 import { TOPICS } from "@/lib/topics";
 import { getDrugsByTopic } from "@/lib/drugs";
 import { getCompletedTopics, useStoreTick } from "@/lib/store";
+import { SubjectSwitcher } from "@/components/SubjectSwitcher";
 
 export default function TopicsPage() {
   useStoreTick();
@@ -15,27 +16,11 @@ export default function TopicsPage() {
 
   return (
     <div className="space-y-5">
+      <SubjectSwitcher active="pharmacology" />
+
       <div>
         <h1 className="text-2xl font-bold text-slate-800">Topic Library</h1>
         <p className="text-sm text-slate-500">9 pharmacology categories. Tap to open drug cards.</p>
-      </div>
-
-      {/* Subject switcher */}
-      <div className="grid grid-cols-2 gap-3">
-        <div className="card flex items-center gap-2 p-3 ring-2 ring-brand-500">
-          <span className="text-xl">📚</span>
-          <div>
-            <div className="text-sm font-semibold text-slate-800">Pharmacology</div>
-            <div className="text-[11px] text-slate-400">K.D. Tripathi</div>
-          </div>
-        </div>
-        <Link href="/microbiology" className="card flex items-center gap-2 p-3 transition hover:shadow-md">
-          <span className="text-xl">🧫</span>
-          <div>
-            <div className="text-sm font-semibold text-slate-800">Microbiology</div>
-            <div className="text-[11px] text-slate-400">Paniker · new</div>
-          </div>
-        </Link>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
