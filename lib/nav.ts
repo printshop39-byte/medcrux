@@ -8,7 +8,8 @@ export interface NavItem {
 export const NAV: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: "🏠", mobile: true },
   { href: "/study-plan", label: "Study Plan", icon: "🗓️", mobile: true },
-  { href: "/topics", label: "Topics", icon: "📚", mobile: true },
+  { href: "/topics", label: "Pharmacology", icon: "📚", mobile: true },
+  { href: "/microbiology", label: "Microbiology", icon: "🧫" },
   { href: "/search", label: "Search", icon: "🔎" },
   { href: "/revision", label: "Revision", icon: "⏱️" },
   { href: "/flashcards", label: "Flashcards", icon: "🃏", mobile: true },
