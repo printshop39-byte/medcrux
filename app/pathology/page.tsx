@@ -41,10 +41,14 @@ export default function PathologyPage() {
           <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">
             📗 Indian book reference
           </span>
-          <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-500">
-            🇷🇺 University syllabus — add lecture PDFs
+          <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-[11px] font-semibold text-indigo-700">
+            🇷🇺 Standard Russia syllabus mapped
           </span>
         </div>
+        <p className="mt-1.5 text-[11px] text-slate-400">
+          Each topic is mapped to its standard Russian Pathology discipline (Патанатомия / Патофизиология).
+          Upload your college lecture PDFs to match exact lectures.
+        </p>
       </div>
 
       {/* Overall readiness */}

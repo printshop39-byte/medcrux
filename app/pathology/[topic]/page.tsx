@@ -140,8 +140,15 @@ export default function PathTopicPage({ params }: { params: Promise<{ topic: str
           📗 {topic.bookRef}
         </span>
         {topic.lectureRef ? (
+          // Matched to an actual uploaded lecture PDF (brand tone).
           <span className="rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-semibold text-brand-700">
             🇷🇺 {topic.lectureRef}
+          </span>
+        ) : topic.syllabusRef ? (
+          // Standard Russian MBBS syllabus discipline/module (generic, honest — not a
+          // specific college lecture). Distinct indigo tone + "Std. syllabus" label.
+          <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-semibold text-indigo-700">
+            🇷🇺 Std. syllabus · {topic.syllabusRef}
           </span>
         ) : (
           <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-500">

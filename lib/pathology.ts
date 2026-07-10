@@ -21,7 +21,8 @@ export interface PathTopic {
   icon: string;
   order: number;
   summary: string;
-  lectureRef?: string; // Russia syllabus source (pending PDFs for Pathology)
+  lectureRef?: string; // set only when matched to an actual uploaded lecture PDF
+  syllabusRef?: string; // standard Russian MBBS Pathology discipline/module (generic, honest)
   bookRef: string; // Indian reference pointer (Harsh Mohan)
   importantForExam: boolean;
   easyNotes: string[];
@@ -41,6 +42,7 @@ export const PATH_TOPICS: PathTopic[] = [
     icon: "🔬",
     order: 1,
     summary: "What pathology is, its four aspects, and the branches & techniques used to study disease.",
+    syllabusRef: "Патологическая анатомия — Введение, методы (Intro & methods)",
     bookRef: "Harsh Mohan — Ch. 1 (Introduction to Pathology)",
     importantForExam: true,
     easyNotes: [
@@ -101,6 +103,7 @@ export const PATH_TOPICS: PathTopic[] = [
     icon: "🧫",
     order: 2,
     summary: "How cells adapt to stress, reversible vs irreversible injury, and the two patterns of cell death.",
+    syllabusRef: "Патологическая анатомия — Повреждение клетки: дистрофии, некроз, апоптоз (Cell injury & death)",
     bookRef: "Harsh Mohan — Cell Injury & Cellular Adaptations",
     importantForExam: true,
     easyNotes: [
@@ -177,6 +180,7 @@ export const PATH_TOPICS: PathTopic[] = [
     icon: "🔥",
     order: 3,
     summary: "The body's rapid response to injury — vascular and cellular events, mediators, and the cardinal signs.",
+    syllabusRef: "Патологическая анатомия — Воспаление (экссудативное) (Inflammation)",
     bookRef: "Harsh Mohan — Inflammation & Healing (Acute)",
     importantForExam: true,
     easyNotes: [
@@ -249,6 +253,7 @@ export const PATH_TOPICS: PathTopic[] = [
     icon: "🧱",
     order: 4,
     summary: "Long-standing inflammation, its cells, and granulomatous diseases like tuberculosis.",
+    syllabusRef: "Патологическая анатомия — Продуктивное (гранулематозное) воспаление (Chronic/granulomatous)",
     bookRef: "Harsh Mohan — Inflammation & Healing (Chronic)",
     importantForExam: true,
     easyNotes: [
@@ -320,6 +325,7 @@ export const PATH_TOPICS: PathTopic[] = [
     icon: "🩹",
     order: 5,
     summary: "How damaged tissue is restored — regeneration vs repair, healing of wounds, and what slows it down.",
+    syllabusRef: "Патологическая анатомия — Компенсаторно-приспособительные процессы: регенерация, репарация (Repair)",
     bookRef: "Harsh Mohan — Healing (Repair & Regeneration)",
     importantForExam: true,
     easyNotes: [
@@ -397,6 +403,7 @@ export const PATH_TOPICS: PathTopic[] = [
     icon: "🩸",
     order: 6,
     summary: "Disorders of blood flow — edema, thrombosis, embolism, infarction and shock.",
+    syllabusRef: "Патанатомия / Патофизиология — Нарушения кровообращения: тромбоз, эмболия, инфаркт (Hemodynamics)",
     bookRef: "Harsh Mohan — Hemodynamic Derangements",
     importantForExam: true,
     easyNotes: [
@@ -469,6 +476,7 @@ export const PATH_TOPICS: PathTopic[] = [
     icon: "🎗️",
     order: 7,
     summary: "Tumours — benign vs malignant, nomenclature, spread/metastasis, grading & staging, and carcinogenesis.",
+    syllabusRef: "Патологическая анатомия — Опухоли, общая онкоморфология (Neoplasia)",
     bookRef: "Harsh Mohan — Neoplasia",
     importantForExam: true,
     easyNotes: [
@@ -541,6 +549,7 @@ export const PATH_TOPICS: PathTopic[] = [
     icon: "🛡️",
     order: 8,
     summary: "When the immune system harms the body — the four hypersensitivity types and autoimmunity basics.",
+    syllabusRef: "Патофизиология / Иммунология — Иммунопатология, реакции гиперчувствительности (Hypersensitivity)",
     bookRef: "Harsh Mohan — Immunopathology",
     importantForExam: true,
     easyNotes: [
@@ -612,6 +621,7 @@ export const PATH_TOPICS: PathTopic[] = [
     icon: "🧬",
     order: 9,
     summary: "Abnormal extracellular protein deposition — its types, staining, and effects on organs.",
+    syllabusRef: "Патологическая анатомия — Стромально-сосудистые диспротеинозы: амилоидоз (Amyloidosis)",
     bookRef: "Harsh Mohan — Amyloidosis",
     importantForExam: true,
     easyNotes: [
