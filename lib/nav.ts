@@ -10,6 +10,7 @@ export const NAV: NavItem[] = [
   { href: "/study-plan", label: "Study Plan", icon: "🗓️", mobile: true },
   { href: "/topics", label: "Pharmacology", icon: "📚", mobile: true },
   { href: "/microbiology", label: "Microbiology", icon: "🧫" },
+  { href: "/pathology", label: "Pathology", icon: "🩸" },
   { href: "/search", label: "Search", icon: "🔎" },
   { href: "/revision", label: "Revision", icon: "⏱️" },
   { href: "/flashcards", label: "Flashcards", icon: "🃏", mobile: true },

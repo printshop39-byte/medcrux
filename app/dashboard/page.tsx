@@ -7,6 +7,8 @@ import { DRUGS, getDrug } from "@/lib/drugs";
 import { STATS } from "@/lib/content";
 import { MICRO_STATS } from "@/lib/microbiology";
 import { getMicroOverall } from "@/lib/micro-progress";
+import { PATH_STATS } from "@/lib/pathology";
+import { getPathOverall } from "@/lib/path-progress";
 import {
   getCompletedTopics,
   getStreak,
@@ -56,8 +58,9 @@ export default function DashboardPage() {
   const totalC = history.reduce((s, h) => s + h.correct, 0);
   const accuracy = totalQ ? Math.round((totalC / totalQ) * 100) : 0;
 
-  // Microbiology subject progress (multi-subject dashboard).
+  // Other subjects' progress (multi-subject dashboard).
   const micro = mounted ? getMicroOverall() : null;
+  const path = mounted ? getPathOverall() : null;
 
   // Today's study-plan checklist (per-day, resets each new day).
   const planDone = Math.min(mounted ? getStudyPlanDone().length : 0, STUDY_PLAN_TASK_COUNT);
@@ -87,7 +90,7 @@ export default function DashboardPage() {
       {/* Subjects */}
       <div>
         <div className="section-title mb-2">Subjects</div>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {/* Pharmacology */}
           <Link href="/topics" className="card p-4 transition hover:shadow-md">
             <div className="flex items-center justify-between">
@@ -114,12 +117,7 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2">
                 <span className="text-xl">🧫</span>
                 <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-semibold text-slate-800">Microbiology</span>
-                    <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700">
-                      NEW
-                    </span>
-                  </div>
+                  <div className="font-semibold text-slate-800">Microbiology</div>
                   <div className="text-[11px] text-slate-400">Paniker · Smolensk lectures</div>
                 </div>
               </div>
@@ -133,6 +131,34 @@ export default function DashboardPage() {
             </div>
             <div className="mt-2 text-[11px] text-slate-400">
               {MICRO_STATS.topicCount} topics · {MICRO_STATS.mcqCount} MCQs · {MICRO_STATS.vivaCount} viva · Start →
+            </div>
+          </Link>
+
+          {/* Pathology */}
+          <Link href="/pathology" className="card p-4 transition hover:shadow-md">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🩸</span>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-semibold text-slate-800">Pathology</span>
+                    <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700">
+                      NEW
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-slate-400">Harsh Mohan</div>
+                </div>
+              </div>
+              <span className="text-lg font-bold text-brand-700">{path ? `${path.percent}%` : "—"}</span>
+            </div>
+            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-200">
+              <div
+                className="h-full rounded-full bg-brand-500 transition-all"
+                style={{ width: `${path?.percent ?? 0}%` }}
+              />
+            </div>
+            <div className="mt-2 text-[11px] text-slate-400">
+              {PATH_STATS.topicCount} topics · {PATH_STATS.mcqCount} MCQs · {PATH_STATS.vivaCount} viva · Start →
             </div>
           </Link>
         </div>

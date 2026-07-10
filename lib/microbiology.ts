@@ -1,4 +1,5 @@
 import type { MCQ } from "./types";
+import { validateMCQs as validateSubjectMCQs, type MCQProblem } from "./mcq-validate";
 
 // ── Microbiology module (subject-agnostic, self-contained) ───────────────────
 // This is a NEW subject added alongside Pharmacology. It deliberately does NOT
@@ -763,51 +764,9 @@ export const MICRO_STATS = {
 };
 
 // ── MCQ data validation ──────────────────────────────────────────────────────
-// Catches the data shapes that make an MCQ render wrong in <MCQBlock>:
-//   • not exactly 4 options
-//   • answerIndex out of range (must be 0..options.length-1)
-//   • duplicate option text within one MCQ (two identical options make the
-//     correct-answer highlight ambiguous — MCQBlock keys off the INDEX, so a
-//     duplicate looks like "the same answer is both right and unmarked")
-//   • empty question / explanation, or duplicate MCQ id
-// Used by a dev-only check on the Microbiology page; also safe to unit-test.
-export interface MCQProblem {
-  topic: string;
-  mcqId: string;
-  index: number; // position of the MCQ within its topic
-  issues: string[];
-}
-
+// Dev-only structural check over the Microbiology MCQs (delegates to the shared
+// generic validator so every subject uses identical rules).
+export type { MCQProblem };
 export function validateMCQs(): MCQProblem[] {
-  const problems: MCQProblem[] = [];
-  const seenIds = new Set<string>();
-
-  for (const topic of MICRO_TOPICS) {
-    topic.mcqs.forEach((m, i) => {
-      const issues: string[] = [];
-
-      if (!Array.isArray(m.options) || m.options.length !== 4) {
-        issues.push(`expected exactly 4 options, got ${m.options?.length ?? 0}`);
-      }
-      const optCount = m.options?.length ?? 0;
-      if (!Number.isInteger(m.answerIndex) || m.answerIndex < 0 || m.answerIndex >= optCount) {
-        issues.push(`answerIndex ${m.answerIndex} is out of range 0..${optCount - 1}`);
-      }
-      // Duplicate option text (trimmed, case-insensitive).
-      const norm = (m.options ?? []).map((o) => o.trim().toLowerCase());
-      const dupes = norm.filter((o, idx) => o && norm.indexOf(o) !== idx);
-      if (dupes.length) {
-        issues.push(`duplicate option text: ${[...new Set(dupes)].join(", ")}`);
-      }
-      if (!m.question?.trim()) issues.push("empty question");
-      if (!m.explanation?.trim()) issues.push("empty explanation");
-      if (!m.id?.trim()) issues.push("empty id");
-      else if (seenIds.has(m.id)) issues.push(`duplicate id "${m.id}"`);
-      else seenIds.add(m.id);
-
-      if (issues.length) problems.push({ topic: topic.slug, mcqId: m.id, index: i, issues });
-    });
-  }
-
-  return problems;
+  return validateSubjectMCQs(MICRO_TOPICS);
 }

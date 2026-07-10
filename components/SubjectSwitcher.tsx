@@ -7,6 +7,7 @@ import Link from "next/link";
 const SUBJECTS = [
   { key: "pharmacology", label: "Pharmacology", icon: "📚", href: "/topics", book: "K.D. Tripathi" },
   { key: "microbiology", label: "Microbiology", icon: "🧫", href: "/microbiology", book: "Paniker" },
+  { key: "pathology", label: "Pathology", icon: "🩸", href: "/pathology", book: "Harsh Mohan" },
 ] as const;
 
 export type SubjectKey = (typeof SUBJECTS)[number]["key"];
