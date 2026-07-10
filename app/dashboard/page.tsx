@@ -11,6 +11,7 @@ import { PATH_STATS } from "@/lib/pathology";
 import { getPathOverall } from "@/lib/path-progress";
 import { CLINICAL_STATS } from "@/lib/clinical";
 import { getClinicalOverall } from "@/lib/clinical-progress";
+import { DAILY_FACTS, getDailyFact } from "@/lib/facts";
 import {
   getCompletedTopics,
   getStreak,
@@ -71,6 +72,11 @@ export default function DashboardPage() {
   const planAllDone = planDone === STUDY_PLAN_TASK_COUNT;
   const planCompletedToday = mounted ? isPlanCompletedToday() : false;
 
+  // "Med fact of the day" — deterministic daily rotation. Hydration-safe: the
+  // first fact until mounted, then the real day's fact (server/client dates can
+  // differ, so it must be computed client-side).
+  const fact = mounted ? getDailyFact(new Date()) : DAILY_FACTS[0];
+
   return (
     <div className="space-y-6">
       <div>
@@ -78,16 +84,36 @@ export default function DashboardPage() {
         <p className="text-sm text-slate-500">Revise fast before your lecture or exam.</p>
       </div>
 
+      {/* Med fact / study quote of the day */}
+      <div className="card flex items-start gap-3 border-brand-100 bg-brand-50/50 p-4">
+        <span className="text-xl" aria-hidden="true">{fact.emoji}</span>
+        <div>
+          <div className="text-[11px] font-semibold uppercase tracking-wide text-brand-600">
+            {fact.tag === "quote" ? "Study quote of the day" : "Med fact of the day"}
+          </div>
+          <p className="mt-0.5 text-sm text-slate-700">{fact.text}</p>
+        </div>
+      </div>
+
       {/* Stat row */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Progress" value={`${progress}%`} sub={`${pharmaCompleted.length}/${TOPICS.length} topics`} />
-        <StatCard label="Study streak" value={`${streak}🔥`} sub="days in a row" />
+        <StatCard label="Progress" ringPercent={progress} sub={`${pharmaCompleted.length}/${TOPICS.length} topics`} />
+        <StatCard
+          label="Study streak"
+          value={
+            <>
+              {streak}
+              <span className={`flame ${streak > 0 ? "flame-active" : ""} ${streak >= 7 ? "flame-gold" : ""}`}>🔥</span>
+            </>
+          }
+          sub="days in a row"
+        />
         <StatCard
           label="Exam in"
           value={examDays === null ? "—" : examDays < 0 ? "past" : `${examDays}d`}
           sub={examDays === null ? "set in Settings" : "days left"}
         />
-        <StatCard label="MCQ accuracy" value={`${accuracy}%`} sub={`${totalQ} attempted`} />
+        <StatCard label="MCQ accuracy" ringPercent={accuracy} sub={`${totalQ} attempted`} />
       </div>
 
       {/* Subjects */}
@@ -254,11 +280,27 @@ export default function DashboardPage() {
   );
 }
 
-function StatCard({ label, value, sub }: { label: string; value: string; sub: string }) {
+function StatCard({
+  label,
+  value,
+  sub,
+  ringPercent,
+}: {
+  label: string;
+  value?: React.ReactNode;
+  sub: string;
+  ringPercent?: number;
+}) {
   return (
     <div className="card p-4">
       <div className="text-xs text-slate-400">{label}</div>
-      <div className="mt-1 text-2xl font-bold text-slate-800">{value}</div>
+      {ringPercent !== undefined ? (
+        <div className="mt-1">
+          <ProgressRing percent={ringPercent} size={46} />
+        </div>
+      ) : (
+        <div className="mt-1 text-2xl font-bold text-slate-800">{value}</div>
+      )}
       <div className="text-[11px] text-slate-400">{sub}</div>
     </div>
   );
@@ -276,14 +318,14 @@ function MiniStat({ n, label }: { n: number; label: string }) {
 // Lightweight circular progress ring — pure SVG, no animation library.
 // The foreground arc animates via a CSS transition on stroke-dashoffset; the
 // percentage renders as visible text with an aria-label for screen readers.
-function ProgressRing({ percent }: { percent: number }) {
-  const size = 54;
-  const stroke = 5;
+function ProgressRing({ percent, size = 54 }: { percent: number; size?: number }) {
+  const stroke = Math.max(4, Math.round(size * 0.095));
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   const clamped = Math.max(0, Math.min(100, Math.round(percent)));
   const offset = c - (clamped / 100) * c;
   const center = size / 2;
+  const fontSize = Math.round(size * 0.24);
   return (
     <svg
       width={size}
@@ -311,7 +353,7 @@ function ProgressRing({ percent }: { percent: number }) {
         y={center}
         dominantBaseline="central"
         textAnchor="middle"
-        fontSize="13"
+        fontSize={fontSize}
         className="fill-slate-800 font-bold"
       >
         {clamped}%

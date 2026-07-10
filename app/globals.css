@@ -41,6 +41,35 @@ body {
   scrollbar-width: none;
 }
 
+/* Streak flame — subtle pulse when streak > 0, golden glow at a 7+ day streak.
+   Pure CSS; respects prefers-reduced-motion. */
+@keyframes flame-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.16);
+  }
+}
+.flame {
+  display: inline-block;
+  transform-origin: center bottom;
+}
+.flame-active {
+  animation: flame-pulse 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 3px rgba(249, 115, 22, 0.55));
+}
+.flame-gold {
+  /* stronger, golden glow — wins over .flame-active's filter (declared later) */
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.95)) saturate(1.35);
+}
+@media (prefers-reduced-motion: reduce) {
+  .flame-active {
+    animation: none;
+  }
+}
+
 /* Flashcard flip */
 .flip-card {
   perspective: 1200px;

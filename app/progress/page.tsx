@@ -6,6 +6,7 @@ import {
   getCompletedTopics,
   getMCQHistory,
   getCardDifficulty,
+  getSubjectMCQScores,
   getStreak,
   useStoreTick,
 } from "@/lib/store";
@@ -36,6 +37,24 @@ export default function ProgressPage() {
   const easy = allCards.filter((c) => diffs[c.id] === "easy").length;
   const rated = hard + medium + easy;
 
+  // ── Achievement badges (derived from existing localStorage/cloud data only) ──
+  const subjectScores = mounted ? getSubjectMCQScores() : {};
+  const subjAttempted = Object.values(subjectScores).reduce((n, s) => n + s.attempted, 0);
+  const subjCorrect = Object.values(subjectScores).reduce((n, s) => n + s.correct, 0);
+  const mcqAttempted = totalQ + subjAttempted; // pharma exam history + per-subject MCQs
+  const mcqCorrect = totalC + subjCorrect;
+  const mcqAcc = mcqAttempted ? mcqCorrect / mcqAttempted : 0;
+
+  const badges = [
+    { id: "pharma-rookie", icon: "💊", name: "Pharmacology Rookie", desc: "Complete a pharmacology topic", earned: completed.some((s) => TOPICS.some((t) => t.slug === s)) },
+    { id: "micro-starter", icon: "🧫", name: "Microbiology Starter", desc: "Complete a microbiology topic", earned: completed.some((s) => s.startsWith("micro-")) },
+    { id: "path-starter", icon: "🩸", name: "Pathology Starter", desc: "Complete a pathology topic", earned: completed.some((s) => s.startsWith("path-")) },
+    { id: "clin-starter", icon: "🩺", name: "Clinical Exam Starter", desc: "Complete a clinical topic", earned: completed.some((s) => s.startsWith("clin-")) },
+    { id: "streak-7", icon: "🔥", name: "7-Day Streak", desc: "Study 7 days in a row", earned: streak >= 7 },
+    { id: "sharp-shooter", icon: "🎯", name: "MCQ Sharp Shooter", desc: "80%+ over 20+ MCQs", earned: mcqAttempted >= 20 && mcqAcc >= 0.8 },
+  ];
+  const earnedBadges = badges.filter((b) => b.earned).length;
+
   return (
     <div className="space-y-6">
       <div>
@@ -47,7 +66,27 @@ export default function ProgressPage() {
         <Stat label="Topics done" value={`${pharmaCompleted.length}/${TOPICS.length}`} />
         <Stat label="MCQ accuracy" value={`${accuracy}%`} />
         <Stat label="Tests taken" value={`${history.length}`} />
-        <Stat label="Streak" value={`${streak}🔥`} />
+        <Stat
+          label="Streak"
+          value={
+            <>
+              {streak}
+              <span className={`flame ${streak > 0 ? "flame-active" : ""} ${streak >= 7 ? "flame-gold" : ""}`}>🔥</span>
+            </>
+          }
+        />
+      </div>
+
+      {/* Achievements — derived from existing progress data (no new storage). */}
+      <div className="card p-5">
+        <div className="section-title mb-3">
+          🏅 Achievements — {earnedBadges}/{badges.length} earned
+        </div>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {badges.map((b) => (
+            <Badge key={b.id} icon={b.icon} name={b.name} desc={b.desc} earned={b.earned} />
+          ))}
+        </div>
       </div>
 
       {/* Topic completion */}
@@ -112,11 +151,28 @@ export default function ProgressPage() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="card p-4">
       <div className="text-xs text-slate-400">{label}</div>
       <div className="mt-1 text-2xl font-bold text-slate-800">{value}</div>
+    </div>
+  );
+}
+
+function Badge({ icon, name, desc, earned }: { icon: string; name: string; desc: string; earned: boolean }) {
+  return (
+    <div
+      className={`rounded-xl border p-3 text-center transition ${
+        earned ? "border-brand-200 bg-brand-50" : "border-slate-200 bg-slate-50"
+      }`}
+      title={earned ? `Earned: ${name}` : `Locked: ${desc}`}
+    >
+      <div className={`text-2xl ${earned ? "" : "opacity-30 grayscale"}`} aria-hidden="true">
+        {icon}
+      </div>
+      <div className={`mt-1 text-xs font-semibold ${earned ? "text-brand-800" : "text-slate-400"}`}>{name}</div>
+      <div className="mt-0.5 text-[10px] text-slate-400">{earned ? "✓ earned" : desc}</div>
     </div>
   );
 }

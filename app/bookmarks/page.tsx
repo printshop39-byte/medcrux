@@ -29,11 +29,22 @@ export default function BookmarksPage() {
       <section>
         <div className="section-title mb-2">⭐ Saved drugs</div>
         {bookmarks.length === 0 ? (
-          <div className="card p-6 text-center text-sm text-slate-500">
-            No bookmarks yet. Open a drug and tap 🔖 to save it.
-            <div className="mt-3">
-              <Link href="/topics" className="btn-primary">Browse topics</Link>
+          <div className="card flex flex-col items-center px-6 py-10 text-center">
+            {/* Simple medical illustration — a bookmark with a pill badge on a soft ring. */}
+            <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-brand-50 ring-1 ring-brand-100">
+              <span className="text-4xl" aria-hidden="true">🔖</span>
+              <span className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-white text-lg shadow-sm ring-1 ring-slate-100" aria-hidden="true">
+                💊
+              </span>
             </div>
+            <div className="mt-4 text-sm font-semibold text-slate-700">No saved drugs yet</div>
+            <p className="mt-1 max-w-xs text-xs text-slate-500">
+              Tap the 🔖 on any drug or topic to pin the important ones here — your personal
+              high-yield list for last-minute revision.
+            </p>
+            <Link href="/topics" className="btn-primary mt-4">
+              Browse topics
+            </Link>
           </div>
         ) : (
           <div className="grid gap-3 sm:grid-cols-2">
