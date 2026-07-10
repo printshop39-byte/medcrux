@@ -18,6 +18,9 @@ export interface Topic {
   description: string;
   icon: string; // emoji used as a lightweight icon
   order: number;
+  // Indian-reference pointer (K.D. Tripathi chapter/page) shown as a badge.
+  // A citation only — no textbook text is reproduced in the app.
+  reference?: string;
 }
 
 export interface MCQ {

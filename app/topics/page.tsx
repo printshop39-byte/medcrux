@@ -21,6 +21,11 @@ export default function TopicsPage() {
       <div>
         <h1 className="text-2xl font-bold text-slate-800">Topic Library</h1>
         <p className="text-sm text-slate-500">9 pharmacology categories. Tap to open drug cards.</p>
+        <div className="mt-2">
+          <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">
+            📗 Indian reference: K.D. Tripathi
+          </span>
+        </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
@@ -37,8 +42,15 @@ export default function TopicsPage() {
                     {done && <span className="chip">✓ done</span>}
                   </div>
                   <p className="mt-0.5 text-xs text-slate-500">{t.description}</p>
-                  <div className="mt-2 text-[11px] text-slate-400">
-                    {count > 0 ? `${count} drug${count > 1 ? "s" : ""}` : "Concept topic"}
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                    <span className="text-[11px] text-slate-400">
+                      {count > 0 ? `${count} drug${count > 1 ? "s" : ""}` : "Concept topic"}
+                    </span>
+                    {t.reference && (
+                      <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                        📗 K.D. Tripathi · {t.reference}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -46,6 +58,11 @@ export default function TopicsPage() {
           );
         })}
       </div>
+
+      <p className="text-center text-[11px] text-slate-400">
+        MedCrux provides original study notes aligned to standard MBBS references (K.D. Tripathi).
+        It does not reproduce textbook content — refer to the original textbook for complete reading.
+      </p>
     </div>
   );
 }

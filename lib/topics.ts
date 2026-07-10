@@ -7,6 +7,7 @@ export const TOPICS: Topic[] = [
     description: "Pharmacokinetics, pharmacodynamics, receptors, ADR, prescription writing.",
     icon: "🧪",
     order: 1,
+    reference: "Sec 1 · Ch 1–6 · p.1",
   },
   {
     slug: "autonomic-nervous-system",
@@ -14,6 +15,7 @@ export const TOPICS: Topic[] = [
     description: "Cholinergics, anticholinergics, adrenergic agonists, alpha & beta blockers.",
     icon: "⚡",
     order: 2,
+    reference: "Sec 2 · Ch 7–10 · p.92",
   },
   {
     slug: "cardiovascular-drugs",
@@ -21,6 +23,7 @@ export const TOPICS: Topic[] = [
     description: "Antihypertensives, diuretics, antianginals, antiarrhythmics, heart failure.",
     icon: "❤️",
     order: 3,
+    reference: "Sec 8 · Ch 36–40 · p.492",
   },
   {
     slug: "cns-drugs",
@@ -28,6 +31,7 @@ export const TOPICS: Topic[] = [
     description: "Sedatives, benzodiazepines, antidepressants, antipsychotics, opioids, anesthetics.",
     icon: "🧠",
     order: 4,
+    reference: "Sec 7 · Ch 27–35 · p.372",
   },
   {
     slug: "antibiotics",
@@ -35,6 +39,7 @@ export const TOPICS: Topic[] = [
     description: "Penicillins, cephalosporins, macrolides, aminoglycosides, quinolones, and more.",
     icon: "🦠",
     order: 5,
+    reference: "Sec 12 · Ch 49–54 · p.688",
   },
   {
     slug: "antimicrobials",
@@ -42,6 +47,7 @@ export const TOPICS: Topic[] = [
     description: "Antivirals, antifungals and antitubercular drugs.",
     icon: "🧬",
     order: 6,
+    reference: "Sec 12 · Ch 55–61 · p.765",
   },
   {
     slug: "endocrine-pharmacology",
@@ -49,6 +55,7 @@ export const TOPICS: Topic[] = [
     description: "Insulin, oral antidiabetics, thyroid drugs, corticosteroids.",
     icon: "🩸",
     order: 7,
+    reference: "Sec 5 · Ch 17–24 · p.234",
   },
   {
     slug: "nsaids-analgesics",
@@ -56,6 +63,7 @@ export const TOPICS: Topic[] = [
     description: "Aspirin, ibuprofen, diclofenac, paracetamol, opioids.",
     icon: "💊",
     order: 8,
+    reference: "Ch 14–15, 34 · p.192",
   },
   {
     slug: "autacoids",
@@ -63,6 +71,7 @@ export const TOPICS: Topic[] = [
     description: "Histamine, antihistamines, 5-HT, prostaglandins and related mediators.",
     icon: "🔬",
     order: 9,
+    reference: "Sec 3 · Ch 11–13 · p.159",
   },
 ];
 

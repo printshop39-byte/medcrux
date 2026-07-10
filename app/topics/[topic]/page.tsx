@@ -52,6 +52,15 @@ export default function TopicPage({ params }: { params: Promise<{ topic: string 
         </button>
       </div>
 
+      {/* Indian-reference pointer (citation only — no textbook text reproduced). */}
+      {topic.reference && (
+        <div className="flex flex-wrap gap-1.5">
+          <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+            📗 K.D. Tripathi · {topic.reference}
+          </span>
+        </div>
+      )}
+
       {(drugs.length > 0 || slug === "general-pharmacology") && (
         <div className="flex gap-2">
           {slug !== "general-pharmacology" && (
@@ -101,6 +110,13 @@ export default function TopicPage({ params }: { params: Promise<{ topic: string 
             </Link>
           ))}
         </div>
+      )}
+
+      {topic.reference && (
+        <p className="text-center text-[11px] text-slate-400">
+          Original study notes aligned to K.D. Tripathi ({topic.reference}). MedCrux does not reproduce
+          textbook content — refer to the original textbook for complete reading.
+        </p>
       )}
     </div>
   );
