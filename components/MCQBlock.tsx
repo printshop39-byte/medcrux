@@ -10,11 +10,15 @@ export function MCQBlock({
   mcq: MCQ;
   onAnswer?: (correct: boolean) => void;
 }) {
+  // `selected` is the single chosen OPTION INDEX (never the option text), so only
+  // one option can ever be "picked" per MCQ. The correct-answer highlight is
+  // driven by `mcq.answerIndex` (also an index) — independent of option text, so
+  // duplicate option strings can never make two options both "selected".
   const [selected, setSelected] = useState<number | null>(null);
   const answered = selected !== null;
 
   function choose(i: number) {
-    if (answered) return; // record only the first answer
+    if (answered) return; // lock after the first answer; record only once
     setSelected(i);
     onAnswer?.(i === mcq.answerIndex);
   }
@@ -24,24 +28,34 @@ export function MCQBlock({
       <p className="font-medium text-slate-800">{mcq.question}</p>
       <div className="mt-3 space-y-2">
         {mcq.options.map((opt, i) => {
-          const isCorrect = i === mcq.answerIndex;
-          const isPicked = i === selected;
+          const isCorrect = i === mcq.answerIndex; // by index, not text
+          const isPicked = i === selected; // the one option the user chose
+          const pickedWrong = isPicked && !isCorrect;
           let cls = "border-slate-200 hover:bg-slate-50";
           if (answered && isCorrect) cls = "border-green-400 bg-green-50 text-green-800";
-          else if (answered && isPicked && !isCorrect) cls = "border-red-300 bg-red-50 text-red-700";
+          else if (answered && pickedWrong) cls = "border-red-300 bg-red-50 text-red-700";
           return (
             <button
               key={i}
               disabled={answered}
               onClick={() => choose(i)}
+              aria-pressed={isPicked}
               className={`flex w-full items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition ${cls}`}
             >
               <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-current text-[11px]">
                 {String.fromCharCode(65 + i)}
               </span>
-              {opt}
-              {answered && isCorrect && <span className="ml-auto">✓</span>}
-              {answered && isPicked && !isCorrect && <span className="ml-auto">✕</span>}
+              <span className="flex-1">{opt}</span>
+              {/* Labels disambiguate "the answer you picked" from "the correct answer"
+                  so a wrong answer (red pick + green correct) never reads as two selections. */}
+              {answered && isCorrect && (
+                <span className="ml-auto shrink-0 text-[10px] font-semibold text-green-700">
+                  {isPicked ? "Your answer · correct ✓" : "Correct answer ✓"}
+                </span>
+              )}
+              {answered && pickedWrong && (
+                <span className="ml-auto shrink-0 text-[10px] font-semibold text-red-600">Your answer ✕</span>
+              )}
             </button>
           );
         })}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { MICRO_TOPICS, MICRO_STATS } from "@/lib/microbiology";
+import { MICRO_TOPICS, MICRO_STATS, validateMCQs } from "@/lib/microbiology";
 import { getMicroTopicProgress, getMicroOverall } from "@/lib/micro-progress";
 import { useStoreTick } from "@/lib/store";
 import { SubjectSwitcher } from "@/components/SubjectSwitcher";
@@ -12,6 +12,15 @@ export default function MicrobiologyPage() {
   // Read localStorage only after mount to avoid a hydration mismatch.
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  // Dev-only data check: warn loudly if any Microbiology MCQ is malformed
+  // (bad answerIndex, duplicate options, wrong option count, etc.).
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    const problems = validateMCQs();
+    if (problems.length) console.warn("[MCQ validation] invalid Microbiology MCQs:", problems);
+    else console.info("[MCQ validation] all Microbiology MCQs are structurally valid ✓");
+  }, []);
 
   const progress = mounted ? getMicroTopicProgress() : [];
   const overall = mounted ? getMicroOverall() : null;
