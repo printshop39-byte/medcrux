@@ -8,6 +8,7 @@ const SUBJECTS = [
   { key: "pharmacology", label: "Pharmacology", icon: "📚", href: "/topics", book: "K.D. Tripathi" },
   { key: "microbiology", label: "Microbiology", icon: "🧫", href: "/microbiology", book: "Paniker" },
   { key: "pathology", label: "Pathology", icon: "🩸", href: "/pathology", book: "Harsh Mohan" },
+  { key: "clinical", label: "Clinical Exam", icon: "🩺", href: "/clinical", book: "Macleod" },
 ] as const;
 
 export type SubjectKey = (typeof SUBJECTS)[number]["key"];

@@ -9,6 +9,8 @@ import { MICRO_STATS } from "@/lib/microbiology";
 import { getMicroOverall } from "@/lib/micro-progress";
 import { PATH_STATS } from "@/lib/pathology";
 import { getPathOverall } from "@/lib/path-progress";
+import { CLINICAL_STATS } from "@/lib/clinical";
+import { getClinicalOverall } from "@/lib/clinical-progress";
 import {
   getCompletedTopics,
   getStreak,
@@ -61,6 +63,7 @@ export default function DashboardPage() {
   // Other subjects' progress (multi-subject dashboard).
   const micro = mounted ? getMicroOverall() : null;
   const path = mounted ? getPathOverall() : null;
+  const clinical = mounted ? getClinicalOverall() : null;
 
   // Today's study-plan checklist (per-day, resets each new day).
   const planDone = Math.min(mounted ? getStudyPlanDone().length : 0, STUDY_PLAN_TASK_COUNT);
@@ -90,7 +93,7 @@ export default function DashboardPage() {
       {/* Subjects */}
       <div>
         <div className="section-title mb-2">Subjects</div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           {/* Pharmacology */}
           <Link href="/topics" className="card p-4 transition hover:shadow-md">
             <div className="flex items-center justify-between">
@@ -140,12 +143,7 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2">
                 <span className="text-xl">🩸</span>
                 <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-semibold text-slate-800">Pathology</span>
-                    <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700">
-                      NEW
-                    </span>
-                  </div>
+                  <div className="font-semibold text-slate-800">Pathology</div>
                   <div className="text-[11px] text-slate-400">Harsh Mohan</div>
                 </div>
               </div>
@@ -159,6 +157,34 @@ export default function DashboardPage() {
             </div>
             <div className="mt-2 text-[11px] text-slate-400">
               {PATH_STATS.topicCount} topics · {PATH_STATS.mcqCount} MCQs · {PATH_STATS.vivaCount} viva · Start →
+            </div>
+          </Link>
+
+          {/* Clinical Examination */}
+          <Link href="/clinical" className="card p-4 transition hover:shadow-md">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🩺</span>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-semibold text-slate-800">Clinical Exam</span>
+                    <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700">
+                      NEW
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-slate-400">Macleod</div>
+                </div>
+              </div>
+              <span className="text-lg font-bold text-brand-700">{clinical ? `${clinical.percent}%` : "—"}</span>
+            </div>
+            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-200">
+              <div
+                className="h-full rounded-full bg-brand-500 transition-all"
+                style={{ width: `${clinical?.percent ?? 0}%` }}
+              />
+            </div>
+            <div className="mt-2 text-[11px] text-slate-400">
+              {CLINICAL_STATS.topicCount} topics · {CLINICAL_STATS.mcqCount} MCQs · {CLINICAL_STATS.vivaCount} viva · Start →
             </div>
           </Link>
         </div>
