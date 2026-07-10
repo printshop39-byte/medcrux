@@ -94,99 +94,43 @@ export default function DashboardPage() {
       <div>
         <div className="section-title mb-2">Subjects</div>
         <div className="grid gap-3 sm:grid-cols-2">
-          {/* Pharmacology */}
-          <Link href="/topics" className="card p-4 transition hover:shadow-md">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">📚</span>
-                <div>
-                  <div className="font-semibold text-slate-800">Pharmacology</div>
-                  <div className="text-[11px] text-slate-400">K.D. Tripathi</div>
-                </div>
-              </div>
-              <span className="text-lg font-bold text-brand-700">{progress}%</span>
-            </div>
-            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-200">
-              <div className="h-full rounded-full bg-brand-500 transition-all" style={{ width: `${progress}%` }} />
-            </div>
-            <div className="mt-2 text-[11px] text-slate-400">
-              {pharmaCompleted.length}/{TOPICS.length} topics · {STATS.drugCount} drugs · Continue →
-            </div>
-          </Link>
-
-          {/* Microbiology */}
-          <Link href="/microbiology" className="card p-4 transition hover:shadow-md">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">🧫</span>
-                <div>
-                  <div className="font-semibold text-slate-800">Microbiology</div>
-                  <div className="text-[11px] text-slate-400">Paniker · Smolensk lectures</div>
-                </div>
-              </div>
-              <span className="text-lg font-bold text-brand-700">{micro ? `${micro.percent}%` : "—"}</span>
-            </div>
-            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-200">
-              <div
-                className="h-full rounded-full bg-brand-500 transition-all"
-                style={{ width: `${micro?.percent ?? 0}%` }}
-              />
-            </div>
-            <div className="mt-2 text-[11px] text-slate-400">
-              {MICRO_STATS.topicCount} topics · {MICRO_STATS.mcqCount} MCQs · {MICRO_STATS.vivaCount} viva · Start →
-            </div>
-          </Link>
-
-          {/* Pathology */}
-          <Link href="/pathology" className="card p-4 transition hover:shadow-md">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">🩸</span>
-                <div>
-                  <div className="font-semibold text-slate-800">Pathology</div>
-                  <div className="text-[11px] text-slate-400">Harsh Mohan</div>
-                </div>
-              </div>
-              <span className="text-lg font-bold text-brand-700">{path ? `${path.percent}%` : "—"}</span>
-            </div>
-            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-200">
-              <div
-                className="h-full rounded-full bg-brand-500 transition-all"
-                style={{ width: `${path?.percent ?? 0}%` }}
-              />
-            </div>
-            <div className="mt-2 text-[11px] text-slate-400">
-              {PATH_STATS.topicCount} topics · {PATH_STATS.mcqCount} MCQs · {PATH_STATS.vivaCount} viva · Start →
-            </div>
-          </Link>
-
-          {/* Clinical Examination */}
-          <Link href="/clinical" className="card p-4 transition hover:shadow-md">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">🩺</span>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-semibold text-slate-800">Clinical Exam</span>
-                    <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700">
-                      NEW
-                    </span>
-                  </div>
-                  <div className="text-[11px] text-slate-400">Macleod</div>
-                </div>
-              </div>
-              <span className="text-lg font-bold text-brand-700">{clinical ? `${clinical.percent}%` : "—"}</span>
-            </div>
-            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-200">
-              <div
-                className="h-full rounded-full bg-brand-500 transition-all"
-                style={{ width: `${clinical?.percent ?? 0}%` }}
-              />
-            </div>
-            <div className="mt-2 text-[11px] text-slate-400">
-              {CLINICAL_STATS.topicCount} topics · {CLINICAL_STATS.mcqCount} MCQs · {CLINICAL_STATS.vivaCount} viva · Start →
-            </div>
-          </Link>
+          <SubjectCard
+            href="/topics"
+            icon="📚"
+            name="Pharmacology"
+            book="K.D. Tripathi"
+            percent={progress}
+            stats={`${pharmaCompleted.length}/${TOPICS.length} topics · ${STATS.drugCount} drugs`}
+            cta="Continue"
+          />
+          <SubjectCard
+            href="/microbiology"
+            icon="🧫"
+            name="Microbiology"
+            book="Paniker · Smolensk lectures"
+            percent={micro?.percent ?? 0}
+            stats={`${MICRO_STATS.topicCount} topics · ${MICRO_STATS.mcqCount} MCQs · ${MICRO_STATS.vivaCount} viva`}
+            cta="Start"
+          />
+          <SubjectCard
+            href="/pathology"
+            icon="🩸"
+            name="Pathology"
+            book="Harsh Mohan"
+            percent={path?.percent ?? 0}
+            stats={`${PATH_STATS.topicCount} topics · ${PATH_STATS.mcqCount} MCQs · ${PATH_STATS.vivaCount} viva`}
+            cta="Start"
+          />
+          <SubjectCard
+            href="/clinical"
+            icon="🩺"
+            name="Clinical Exam"
+            book="Macleod"
+            isNew
+            percent={clinical?.percent ?? 0}
+            stats={`${CLINICAL_STATS.topicCount} topics · ${CLINICAL_STATS.mcqCount} MCQs · ${CLINICAL_STATS.vivaCount} viva`}
+            cta="Start"
+          />
         </div>
       </div>
 
@@ -326,5 +270,93 @@ function MiniStat({ n, label }: { n: number; label: string }) {
       <div className="text-xl font-bold text-brand-700">{n}</div>
       <div className="text-[11px] text-slate-500">{label}</div>
     </div>
+  );
+}
+
+// Lightweight circular progress ring — pure SVG, no animation library.
+// The foreground arc animates via a CSS transition on stroke-dashoffset; the
+// percentage renders as visible text with an aria-label for screen readers.
+function ProgressRing({ percent }: { percent: number }) {
+  const size = 54;
+  const stroke = 5;
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  const clamped = Math.max(0, Math.min(100, Math.round(percent)));
+  const offset = c - (clamped / 100) * c;
+  const center = size / 2;
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      role="img"
+      aria-label={`${clamped}% complete`}
+      className="shrink-0"
+    >
+      <circle cx={center} cy={center} r={r} fill="none" strokeWidth={stroke} className="stroke-slate-200" />
+      <circle
+        cx={center}
+        cy={center}
+        r={r}
+        fill="none"
+        strokeWidth={stroke}
+        strokeLinecap="round"
+        strokeDasharray={c}
+        strokeDashoffset={offset}
+        transform={`rotate(-90 ${center} ${center})`}
+        className="stroke-brand-500 transition-[stroke-dashoffset] duration-700 ease-out motion-reduce:transition-none"
+      />
+      <text
+        x={center}
+        y={center}
+        dominantBaseline="central"
+        textAnchor="middle"
+        fontSize="13"
+        className="fill-slate-800 font-bold"
+      >
+        {clamped}%
+      </text>
+    </svg>
+  );
+}
+
+function SubjectCard({
+  href,
+  icon,
+  name,
+  book,
+  isNew,
+  percent,
+  stats,
+  cta,
+}: {
+  href: string;
+  icon: string;
+  name: string;
+  book: string;
+  isNew?: boolean;
+  percent: number;
+  stats: string;
+  cta: string;
+}) {
+  return (
+    <Link href={href} className="card flex items-center justify-between gap-3 p-4 transition hover:shadow-md">
+      <div className="min-w-0">
+        <div className="flex items-center gap-1.5">
+          <span className="text-xl">{icon}</span>
+          <span className="truncate font-semibold text-slate-800">{name}</span>
+          {isNew && (
+            <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700">
+              NEW
+            </span>
+          )}
+        </div>
+        <div className="mt-0.5 text-[11px] text-slate-400">{book}</div>
+        <div className="mt-1.5 text-[11px] text-slate-400">
+          {stats} · {cta} →
+        </div>
+      </div>
+      <ProgressRing percent={percent} />
+    </Link>
   );
 }
