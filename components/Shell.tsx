@@ -8,6 +8,7 @@ import { ShortcutOverlay } from "./ShortcutOverlay";
 import { AuthButton } from "./AuthButton";
 import { SyncGate } from "./SyncGate";
 import { SmoothScroll } from "./SmoothScroll";
+import { ThemeToggle } from "./ThemeToggle";
 
 // Static classes so Tailwind keeps them; keyed by number of mobile nav items.
 const MOBILE_GRID: Record<number, string> = {
@@ -73,6 +74,17 @@ export function Shell({ children }: { children: React.ReactNode }) {
                 <SearchBar />
               </div>
             </div>
+            {/* Quick theme toggle (all screens) + Settings gear (mobile only —
+                desktop reaches Settings from the sidebar). */}
+            <ThemeToggle />
+            <Link
+              href="/settings"
+              aria-label="Settings"
+              title="Settings"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-base transition hover:bg-slate-50 lg:hidden"
+            >
+              ⚙️
+            </Link>
             <AuthButton />
           </div>
         </header>
