@@ -1833,6 +1833,247 @@ const CORE_DRUGS: Drug[] = [
       },
     ],
   },
+  {
+    id: "diclofenac",
+    name: "Diclofenac",
+    topic: "nsaids-analgesics",
+    drugClass: "Non-selective NSAID (phenylacetic acid derivative)",
+    moa: "Reversibly inhibits COX-1 and COX-2 (somewhat COX-2 preferential), lowering prostaglandin synthesis for anti-inflammatory and analgesic effect.",
+    uses: ["Osteoarthritis", "Rheumatoid arthritis", "Acute musculoskeletal pain", "Post-operative pain", "Dysmenorrhea", "Renal colic"],
+    sideEffects: ["Gastric irritation / ulcer", "Hepatotoxicity (raised transaminases)", "Increased cardiovascular / thrombotic risk", "Fluid retention", "Renal impairment"],
+    contraindications: ["Active peptic ulcer", "Ischemic heart disease or stroke", "Severe heart failure", "Third-trimester pregnancy", "Significant renal impairment"],
+    interactions: ["Increased bleeding with anticoagulants / antiplatelets", "Reduces effect of antihypertensives and diuretics", "Raises lithium and methotrexate levels", "AKI with ACE inhibitor + diuretic ('triple whammy')"],
+    mnemonic: "\"Diclofenac — potent NSAID with the highest CV-risk flag among common NSAIDs; watch the liver.\"",
+    vivaQuestions: [
+      { q: "Which common NSAID carries a notably high cardiovascular thrombotic risk?", a: "Diclofenac." },
+      { q: "What is the 'triple whammy' that causes acute kidney injury?", a: "An NSAID combined with an ACE inhibitor/ARB and a diuretic." },
+    ],
+    mcqs: [
+      {
+        id: "diclo-m1",
+        question: "Diclofenac reduces pain and inflammation by inhibiting:",
+        options: ["Lipoxygenase", "Cyclo-oxygenase", "Phospholipase A2 only", "Thromboxane synthase"],
+        answerIndex: 1,
+        explanation: "Like other NSAIDs, diclofenac blocks cyclo-oxygenase, reducing prostaglandins.",
+      },
+      {
+        id: "diclo-m2",
+        question: "The NSAID most associated with cardiovascular thrombotic risk is:",
+        options: ["Naproxen", "Diclofenac", "Aspirin", "Paracetamol"],
+        answerIndex: 1,
+        explanation: "Diclofenac carries the highest thrombotic cardiovascular risk of the common NSAIDs.",
+      },
+    ],
+  },
+  {
+    id: "naproxen",
+    name: "Naproxen",
+    topic: "nsaids-analgesics",
+    drugClass: "Non-selective NSAID (propionic acid derivative)",
+    moa: "Reversibly inhibits COX-1 and COX-2; a long half-life allows twice-daily dosing.",
+    uses: ["Rheumatoid arthritis", "Osteoarthritis", "Acute gout", "Dysmenorrhea", "Musculoskeletal pain"],
+    sideEffects: ["GI irritation / ulcer", "Fluid retention", "Renal impairment"],
+    contraindications: ["Peptic ulcer", "Severe renal impairment", "Third-trimester pregnancy"],
+    interactions: ["Increased bleeding with anticoagulants", "Reduces antihypertensive effect", "Raises lithium and methotrexate levels"],
+    mnemonic: "\"Naproxen — the NSAID with the least cardiovascular risk; prefer it if heart disease.\"",
+    vivaQuestions: [
+      { q: "Which NSAID is preferred when cardiovascular risk is a concern?", a: "Naproxen — it has the lowest thrombotic cardiovascular risk." },
+    ],
+    mcqs: [
+      {
+        id: "napro-m1",
+        question: "The NSAID considered to carry the lowest cardiovascular risk is:",
+        options: ["Diclofenac", "Etoricoxib", "Naproxen", "Celecoxib"],
+        answerIndex: 2,
+        explanation: "Naproxen has the most favourable cardiovascular safety profile among NSAIDs.",
+      },
+    ],
+  },
+  {
+    id: "indomethacin",
+    name: "Indomethacin",
+    topic: "nsaids-analgesics",
+    drugClass: "Non-selective NSAID (indole acetic acid derivative)",
+    moa: "Potent reversible COX inhibitor with strong anti-inflammatory action.",
+    uses: ["Acute gout", "Ankylosing spondylitis", "Closure of patent ductus arteriosus in neonates", "Bartter syndrome"],
+    sideEffects: ["Severe frontal headache", "GI ulceration", "CNS effects (dizziness, confusion)", "Renal impairment"],
+    contraindications: ["Peptic ulcer", "Neonates with active bleeding / necrotizing enterocolitis (for PDA use)", "Renal impairment"],
+    interactions: ["Increased bleeding with anticoagulants", "Raises lithium levels", "Reduces diuretic and antihypertensive effect"],
+    mnemonic: "\"Indomethacin — Induces closure of PDA; Intense frontal headache.\"",
+    vivaQuestions: [
+      { q: "Which NSAID is used to close a patent ductus arteriosus?", a: "Indomethacin — it inhibits the prostaglandins that keep the ductus open." },
+      { q: "Characteristic CNS side effect of indomethacin?", a: "A severe frontal headache." },
+    ],
+    mcqs: [
+      {
+        id: "indo-m1",
+        question: "Indomethacin is used in neonates to:",
+        options: ["Keep the ductus arteriosus open", "Close a patent ductus arteriosus", "Treat jaundice", "Prevent seizures"],
+        answerIndex: 1,
+        explanation: "By inhibiting prostaglandins it promotes closure of a patent ductus arteriosus.",
+      },
+    ],
+  },
+  {
+    id: "ketorolac",
+    name: "Ketorolac",
+    topic: "nsaids-analgesics",
+    drugClass: "Non-selective NSAID (potent analgesic)",
+    moa: "Reversible COX inhibitor with strong analgesic activity (approaching opioids) but only modest anti-inflammatory effect; used short-term.",
+    uses: ["Short-term moderate-to-severe acute pain", "Post-operative pain", "Renal colic"],
+    sideEffects: ["High GI bleeding / ulcer risk", "Renal impairment", "Use limited to 5 days"],
+    contraindications: ["Peptic ulcer or GI bleed", "Renal impairment", "Labour and delivery", "As pre-operative prophylactic analgesia"],
+    interactions: ["Increased bleeding with anticoagulants and other NSAIDs", "Nephrotoxicity with ACE inhibitors / diuretics"],
+    mnemonic: "\"Ketorolac — opioid-strength analgesia, but max 5 days (GI and renal risk).\"",
+    vivaQuestions: [
+      { q: "Why is ketorolac limited to about 5 days of use?", a: "Its high risk of GI bleeding and renal toxicity." },
+    ],
+    mcqs: [
+      {
+        id: "ketor-m1",
+        question: "Ketorolac is mainly used for:",
+        options: ["Chronic arthritis", "Short-term severe acute pain", "Fever", "Migraine prophylaxis"],
+        answerIndex: 1,
+        explanation: "Ketorolac is a potent short-term analgesic for acute pain, not long-term use.",
+      },
+    ],
+  },
+  {
+    id: "piroxicam",
+    name: "Piroxicam",
+    topic: "nsaids-analgesics",
+    drugClass: "Non-selective NSAID (oxicam, long-acting)",
+    moa: "Reversible COX inhibitor with a very long half-life, allowing once-daily dosing.",
+    uses: ["Rheumatoid arthritis", "Osteoarthritis", "Ankylosing spondylitis"],
+    sideEffects: ["High GI ulcer / bleeding risk", "Serious skin reactions (Stevens-Johnson / TEN)", "Fluid retention"],
+    contraindications: ["Peptic ulcer", "History of serious skin reaction", "Renal impairment"],
+    interactions: ["Increased bleeding with anticoagulants", "Raises lithium and methotrexate levels"],
+    mnemonic: "\"Piroxicam — once-daily (long t½) but high GI and skin-reaction risk.\"",
+    vivaQuestions: [
+      { q: "What is the main advantage and drawback of piroxicam?", a: "Once-daily dosing from its long half-life, but a high risk of GI and serious skin reactions." },
+    ],
+    mcqs: [
+      {
+        id: "pirox-m1",
+        question: "Piroxicam allows once-daily dosing mainly because of its:",
+        options: ["Rapid metabolism", "Long half-life", "COX-2 selectivity", "Renal excretion"],
+        answerIndex: 1,
+        explanation: "Its long half-life sustains levels for once-daily dosing.",
+      },
+    ],
+  },
+  {
+    id: "mefenamic-acid",
+    name: "Mefenamic acid",
+    topic: "nsaids-analgesics",
+    drugClass: "Non-selective NSAID (fenamate)",
+    moa: "Reversible COX inhibitor that also antagonizes the action of prostaglandins at their receptors.",
+    uses: ["Dysmenorrhea", "Menorrhagia", "Mild-to-moderate pain"],
+    sideEffects: ["Diarrhea (common)", "GI irritation", "Hemolytic anemia (rare)", "Renal effects"],
+    contraindications: ["Peptic ulcer", "Inflammatory bowel disease", "Renal impairment"],
+    interactions: ["Increased bleeding with anticoagulants", "Raises lithium levels"],
+    mnemonic: "\"Mefenamic acid — 'Menstrual' pain drug that commonly causes diarrhea.\"",
+    vivaQuestions: [
+      { q: "Typical indication and characteristic side effect of mefenamic acid?", a: "Dysmenorrhea / menorrhagia; it characteristically causes diarrhea." },
+    ],
+    mcqs: [
+      {
+        id: "mefen-m1",
+        question: "Mefenamic acid is particularly used for:",
+        options: ["Gout", "Dysmenorrhea", "Patent ductus closure", "Fever in children"],
+        answerIndex: 1,
+        explanation: "It is a common choice for dysmenorrhea and menorrhagia.",
+      },
+    ],
+  },
+  {
+    id: "celecoxib",
+    name: "Celecoxib",
+    topic: "nsaids-analgesics",
+    drugClass: "Selective COX-2 inhibitor (coxib)",
+    moa: "Selectively inhibits COX-2 to reduce inflammatory prostaglandins while largely sparing COX-1, so it causes less gastric injury.",
+    uses: ["Osteoarthritis", "Rheumatoid arthritis", "Ankylosing spondylitis", "Acute pain"],
+    sideEffects: ["Increased cardiovascular / thrombotic risk", "Renal impairment", "Less GI ulceration than non-selective NSAIDs"],
+    contraindications: ["Ischemic heart disease or stroke", "Sulfonamide allergy", "Severe heart failure", "Pain after coronary bypass surgery"],
+    interactions: ["Reduces antihypertensive effect", "Raises warfarin effect (CYP2C9)", "Additive renal risk with ACE inhibitors / diuretics"],
+    mnemonic: "\"Celecoxib — COX-2 selective: kinder to the gut, harder on the heart; caution in sulfa allergy.\"",
+    vivaQuestions: [
+      { q: "What is the advantage of celecoxib over non-selective NSAIDs?", a: "It causes less gastric ulceration because it spares COX-1." },
+      { q: "What is the main safety concern with COX-2 inhibitors?", a: "Increased cardiovascular thrombotic risk." },
+    ],
+    mcqs: [
+      {
+        id: "cele-m1",
+        question: "Celecoxib causes less gastric ulceration because it:",
+        options: ["Blocks COX-1 only", "Selectively inhibits COX-2", "Neutralizes gastric acid", "Directly increases mucus"],
+        answerIndex: 1,
+        explanation: "Sparing COX-1 preserves protective gastric prostaglandins.",
+      },
+      {
+        id: "cele-m2",
+        question: "A major concern with selective COX-2 inhibitors is:",
+        options: ["GI bleeding", "Cardiovascular thrombosis", "Hepatic failure", "Ototoxicity"],
+        answerIndex: 1,
+        explanation: "COX-2 selectivity tips the balance toward prothrombotic cardiovascular events.",
+      },
+    ],
+  },
+  {
+    id: "etoricoxib",
+    name: "Etoricoxib",
+    topic: "nsaids-analgesics",
+    drugClass: "Selective COX-2 inhibitor (coxib)",
+    moa: "Highly selective COX-2 inhibitor with a long half-life allowing once-daily dosing.",
+    uses: ["Osteoarthritis", "Rheumatoid arthritis", "Acute gout", "Ankylosing spondylitis", "Dental / post-operative pain"],
+    sideEffects: ["Hypertension (notable)", "Increased cardiovascular risk", "Edema", "Renal effects"],
+    contraindications: ["Uncontrolled hypertension", "Ischemic heart disease or stroke", "Heart failure", "Severe hepatic impairment"],
+    interactions: ["Reduces effect of antihypertensives (especially ACE inhibitors)", "Rifampicin lowers its levels"],
+    mnemonic: "\"Etoricoxib — COX-2 selective; watch the blood pressure (hypertension).\"",
+    vivaQuestions: [
+      { q: "Which adverse effect notably limits etoricoxib use?", a: "Dose-dependent hypertension (with the general COX-2 cardiovascular risk)." },
+    ],
+    mcqs: [
+      {
+        id: "etori-m1",
+        question: "Etoricoxib should be avoided in patients with:",
+        options: ["Well-controlled asthma", "Uncontrolled hypertension", "Mild osteoarthritis", "Dental pain"],
+        answerIndex: 1,
+        explanation: "Etoricoxib can worsen blood pressure and is avoided in uncontrolled hypertension.",
+      },
+    ],
+  },
+  {
+    id: "tramadol",
+    name: "Tramadol",
+    topic: "nsaids-analgesics",
+    drugClass: "Atypical central analgesic (weak opioid + monoamine reuptake inhibitor)",
+    moa: "Weak μ-opioid receptor agonist that also inhibits serotonin and noradrenaline reuptake, giving central analgesia with less respiratory depression than morphine.",
+    uses: ["Moderate pain", "Post-operative pain", "Chronic pain with a neuropathic component"],
+    sideEffects: ["Nausea", "Dizziness", "Seizures (lowers threshold)", "Serotonin syndrome", "Less constipation / respiratory depression than morphine"],
+    contraindications: ["Epilepsy or seizure risk", "Concurrent MAO inhibitors", "Caution with serotonergic drugs", "Severe renal or hepatic impairment"],
+    interactions: ["SSRIs / SNRIs / MAOIs → serotonin syndrome", "Additive seizure risk with other pro-convulsants", "CYP2D6 status alters efficacy (prodrug activation)"],
+    mnemonic: "\"Tramadol — weak opioid + SNRI; risks Seizures and Serotonin syndrome.\"",
+    vivaQuestions: [
+      { q: "How does tramadol differ mechanistically from morphine?", a: "Besides weak μ-agonism, it inhibits serotonin and noradrenaline reuptake." },
+      { q: "What are two important risks of tramadol?", a: "Seizures and serotonin syndrome." },
+    ],
+    mcqs: [
+      {
+        id: "tram-m1",
+        question: "Besides weak opioid action, tramadol also:",
+        options: ["Blocks COX-2", "Inhibits serotonin and noradrenaline reuptake", "Blocks NMDA receptors only", "Inhibits acetylcholinesterase"],
+        answerIndex: 1,
+        explanation: "Tramadol's dual mechanism includes monoamine (5-HT/NA) reuptake inhibition.",
+      },
+      {
+        id: "tram-m2",
+        question: "Tramadol should be used cautiously in patients with:",
+        options: ["Hypertension", "Epilepsy", "Diabetes", "Asthma"],
+        answerIndex: 1,
+        explanation: "Tramadol lowers the seizure threshold, so it is risky in epilepsy.",
+      },
+    ],
+  },
 ];
 
 // Drugs flagged high-yield for Russian MBBS pharmacology exams. Kept as ID sets
@@ -1848,6 +2089,8 @@ const IMPORTANT_FOR_EXAM = new Set<string>([
   "sumatriptan", "misoprostol", "latanoprost",
   "benzylpenicillin", "amoxicillin-clavulanate", "piperacillin-tazobactam", "cefepime",
   "meropenem", "clindamycin", "metronidazole", "linezolid", "cotrimoxazole",
+  "diclofenac", "naproxen", "indomethacin", "ketorolac", "piroxicam", "mefenamic-acid",
+  "celecoxib", "etoricoxib", "tramadol",
 ]);
 
 const ASKED_FREQUENTLY = new Set<string>([
@@ -1856,6 +2099,7 @@ const ASKED_FREQUENTLY = new Set<string>([
   "isoniazid", "rifampicin", "insulin", "metformin", "aspirin", "paracetamol",
   "diphenhydramine", "ondansetron", "sumatriptan", "misoprostol",
   "benzylpenicillin", "meropenem", "clindamycin", "metronidazole", "cotrimoxazole",
+  "diclofenac", "naproxen", "indomethacin", "celecoxib", "tramadol",
 ]);
 
 // Final drug list = core drugs + any JSON/CSV imports, with exam tags applied.
@@ -1879,6 +2123,23 @@ export const DRUGS: Drug[] = [...CORE_DRUGS, ...(extraDrugs as Drug[])].map((d) 
   }
   if (dups.size) {
     throw new Error(`Duplicate drug id(s) in drug data: ${[...dups].join(", ")}`);
+  }
+})(DRUGS);
+
+// Validate every MCQ: exactly ≥2 options and an in-range answerIndex, so a
+// mis-typed answerIndex can never point at a non-existent (or wrong) option.
+// Throws at module load (build + dev) rather than silently mis-scoring a test.
+(function assertValidMCQAnswers(list: Drug[]) {
+  const bad: string[] = [];
+  for (const d of list) {
+    for (const m of d.mcqs) {
+      if (m.options.length < 2 || m.answerIndex < 0 || m.answerIndex >= m.options.length) {
+        bad.push(`${d.id}/${m.id} (answerIndex ${m.answerIndex}, ${m.options.length} options)`);
+      }
+    }
+  }
+  if (bad.length) {
+    throw new Error(`Invalid MCQ answerIndex in drug data: ${bad.join("; ")}`);
   }
 })(DRUGS);
 
