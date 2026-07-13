@@ -116,7 +116,7 @@ function AiTutorInner() {
       <div className="card grid grid-cols-2 gap-3 p-4">
         <label className="text-xs text-slate-500">
           Drug
-          <select value={drugA} onChange={(e) => setDrugA(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-2 py-2 text-sm text-slate-800">
+          <select value={drugA} onChange={(e) => setDrugA(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-2 py-2 text-sm text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/40 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 [&>option]:bg-white [&>option]:text-slate-900 dark:[&>option]:bg-slate-900 dark:[&>option]:text-slate-100">
             {ALL_DRUGS_MIN.map((d) => (
               <option key={d.id} value={d.id}>{d.name}</option>
             ))}
@@ -124,7 +124,7 @@ function AiTutorInner() {
         </label>
         <label className="text-xs text-slate-500">
           Compare with
-          <select value={drugB} onChange={(e) => setDrugB(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-2 py-2 text-sm text-slate-800">
+          <select value={drugB} onChange={(e) => setDrugB(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-2 py-2 text-sm text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/40 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 [&>option]:bg-white [&>option]:text-slate-900 dark:[&>option]:bg-slate-900 dark:[&>option]:text-slate-100">
             {ALL_DRUGS_MIN.map((d) => (
               <option key={d.id} value={d.id}>{d.name}</option>
             ))}
