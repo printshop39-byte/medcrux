@@ -3,11 +3,11 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { getMCQs, getVivaQuestions, getShortAnswers, seededShuffle, MCQWithMeta, ShortAnswerQ } from "@/lib/content";
+import { getMCQs, getVivaQuestions, getShortAnswers, seededShuffle, shuffleMCQOptions, hashString, MCQWithMeta, ShortAnswerQ } from "@/lib/content";
 import { getImportantDrugs } from "@/lib/drugs";
 import { PRESCRIPTIONS } from "@/lib/prescriptions";
 import { TOPICS, getTopic } from "@/lib/topics";
-import { addMCQAttempt, getMCQHistory, useStoreTick } from "@/lib/store";
+import { addMCQAttempt, getMCQHistory, useStoreTick, useHydrated } from "@/lib/store";
 import { ShortcutsBar } from "@/components/Shortcuts";
 
 type Mode = "menu" | "test" | "result" | "viva" | "shortanswer" | "prescription";
@@ -31,7 +31,13 @@ function ExamInner() {
       pool = pool.filter((q) => important.has(q.drugId));
     }
     const shuffled = seededShuffle(pool, pool.length * 7 + count);
-    setQuestions(shuffled.slice(0, Math.min(count, shuffled.length)));
+    // Shuffle each question's options too — the source data puts the correct
+    // answer at option B ~3/4 of the time, so without this a student can pass
+    // by always picking B. Seeded per-question id so the order stays stable.
+    const picked = shuffled
+      .slice(0, Math.min(count, shuffled.length))
+      .map((q) => shuffleMCQOptions(q, hashString(q.id)));
+    setQuestions(picked);
     setAnswers({});
     setCurrent(0);
     setMode("test");
@@ -191,7 +197,10 @@ function Menu({
   openShort: () => void;
   openRx: () => void;
 }) {
-  const history = getMCQHistory();
+  // localStorage is empty during SSR, so defer reading history until mounted to
+  // keep the first client render identical to the server (avoids hydration error).
+  const hydrated = useHydrated();
+  const history = hydrated ? getMCQHistory() : [];
   return (
     <div className="space-y-5">
       <div>

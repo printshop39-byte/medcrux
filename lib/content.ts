@@ -89,6 +89,58 @@ export function seededShuffle<T>(arr: T[], seed: number): T[] {
   return a;
 }
 
+// Stable, well-distributed 31-bit hash of a string (FNV-1a). Used to derive a
+// per-question shuffle seed so each MCQ's option order is fixed but decorrelated.
+export function hashString(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h & 0x7fffffff;
+}
+
+// mulberry32 — a compact, good-quality deterministic PRNG. Unlike the LCG in
+// seededShuffle, its low-order bits are well mixed, so it distributes uniformly
+// even for tiny arrays (a 4-option shuffle uses only the low bits).
+function mulberry32(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Some options only make sense in their authored position ("Both", "Neither",
+// "All of the above", "A and B", …). Shuffling those would change the question's
+// meaning, so such questions are left untouched.
+const ANCHORED_OPTION = /^(both|neither)$|\b(all|none) of (the above|these)\b|\b[a-d]\s*(and|&|,)\s*[a-d]\b/;
+
+export function hasAnchoredOptions(options: string[]): boolean {
+  return options.some((o) => ANCHORED_OPTION.test(o.trim().toLowerCase()));
+}
+
+// The source MCQ data is heavily biased toward option B — the correct answer sits
+// at index 1 in ~3/4 of questions — which lets a student pass by always picking B.
+// shuffleMCQOptions permutes a question's options and remaps answerIndex so the
+// correct answer is spread across positions. Deterministic given the same seed.
+export function shuffleMCQOptions<T extends MCQ>(q: T, seed: number): T {
+  if (hasAnchoredOptions(q.options)) return q;
+  const rng = mulberry32(seed);
+  const order = q.options.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return {
+    ...q,
+    options: order.map((i) => q.options[i]),
+    answerIndex: order.indexOf(q.answerIndex),
+  };
+}
+
 export interface SearchResult {
   drugId: string;
   name: string;

@@ -246,3 +246,13 @@ export function useStoreTick(): number {
   }, []);
   return tick;
 }
+
+// True only after the component has mounted on the client. The store reads from
+// localStorage, which is empty during SSR — rendering that data on the first
+// client render causes a hydration mismatch. Gate localStorage-derived UI behind
+// this so the initial client render matches the server, then fills in on mount.
+export function useHydrated(): boolean {
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+  return hydrated;
+}
