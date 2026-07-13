@@ -716,6 +716,329 @@ const CORE_DRUGS: Drug[] = [
       },
     ],
   },
+  {
+    id: "cetirizine",
+    name: "Cetirizine",
+    topic: "autacoids",
+    drugClass: "Second-generation H1 antihistamine (active metabolite of hydroxyzine)",
+    moa: "Selectively blocks peripheral H1 receptors; crosses the blood-brain barrier slightly more than loratadine, so it can cause mild sedation.",
+    uses: ["Allergic rhinitis", "Chronic urticaria", "Allergic conjunctivitis", "Atopic dermatitis itch"],
+    sideEffects: ["Mild sedation (most of the 2nd-gen)", "Dry mouth", "Headache"],
+    contraindications: ["Hypersensitivity", "Dose reduction in renal impairment"],
+    interactions: ["Additive CNS depression with alcohol and sedatives"],
+    mnemonic: "\"Cetirizine — the slightly sleepy second-gen.\"",
+    vivaQuestions: [
+      { q: "Which 2nd-generation antihistamine is most likely to sedate?", a: "Cetirizine — it crosses the BBB a little more than loratadine/fexofenadine." },
+      { q: "Cetirizine is the active metabolite of which drug?", a: "Hydroxyzine." },
+    ],
+    mcqs: [
+      {
+        id: "cet-m1",
+        question: "Cetirizine is the active metabolite of:",
+        options: ["Loratadine", "Hydroxyzine", "Promethazine", "Diphenhydramine"],
+        answerIndex: 1,
+        explanation: "Cetirizine is the carboxylated active metabolite of hydroxyzine.",
+      },
+      {
+        id: "cet-m2",
+        question: "Compared with loratadine, cetirizine more often causes:",
+        options: ["Sedation", "Arrhythmia", "Photosensitivity", "Weight gain"],
+        answerIndex: 0,
+        explanation: "Cetirizine penetrates the CNS slightly more, so mild sedation is commoner.",
+      },
+    ],
+  },
+  {
+    id: "fexofenadine",
+    name: "Fexofenadine",
+    topic: "autacoids",
+    drugClass: "Second-generation H1 antihistamine (active metabolite of terfenadine)",
+    moa: "Selective peripheral H1 blockade with negligible CNS entry (non-sedating) and no cardiotoxicity, unlike its withdrawn parent terfenadine.",
+    uses: ["Allergic rhinitis", "Chronic urticaria"],
+    sideEffects: ["Headache", "Essentially non-sedating", "Nausea (uncommon)"],
+    contraindications: ["Hypersensitivity"],
+    interactions: ["Fruit juices (grapefruit, apple, orange) reduce absorption", "Aluminium/magnesium antacids reduce absorption"],
+    mnemonic: "\"Fexofenadine — take with water, not juice.\"",
+    vivaQuestions: [
+      { q: "Why was terfenadine withdrawn while fexofenadine is safe?", a: "Terfenadine caused QT prolongation and torsades when its metabolism was blocked; fexofenadine is its safe active metabolite with no cardiotoxicity." },
+      { q: "What reduces fexofenadine absorption?", a: "Fruit juices and aluminium/magnesium-containing antacids." },
+    ],
+    mcqs: [
+      {
+        id: "fex-m1",
+        question: "Fexofenadine is the safe active metabolite of:",
+        options: ["Astemizole", "Terfenadine", "Loratadine", "Cetirizine"],
+        answerIndex: 1,
+        explanation: "Terfenadine was cardiotoxic; its metabolite fexofenadine is not.",
+      },
+      {
+        id: "fex-m2",
+        question: "Absorption of fexofenadine is decreased by:",
+        options: ["Grapefruit juice", "A high-fat meal", "Vitamin C", "Iron tablets"],
+        answerIndex: 0,
+        explanation: "Fruit juices inhibit the OATP transporter that takes up fexofenadine.",
+      },
+    ],
+  },
+  {
+    id: "diphenhydramine",
+    name: "Diphenhydramine",
+    topic: "autacoids",
+    drugClass: "First-generation H1 antihistamine (ethanolamine)",
+    moa: "Blocks central and peripheral H1 receptors and has antimuscarinic activity; high lipid solubility crosses the BBB, causing sedation.",
+    uses: ["Allergic reactions", "Motion sickness", "Sedation / insomnia (OTC)", "Drug-induced parkinsonism", "Antitussive"],
+    sideEffects: ["Sedation", "Dry mouth", "Blurred vision", "Urinary retention", "Constipation"],
+    contraindications: ["Narrow-angle glaucoma", "Benign prostatic hyperplasia", "Neonates"],
+    interactions: ["Additive sedation with CNS depressants", "Additive antimuscarinic effect with TCAs and atropine"],
+    mnemonic: "\"1st-gen = Drowsy + Dry (sedation plus antimuscarinic).\"",
+    vivaQuestions: [
+      { q: "Why does diphenhydramine sedate?", a: "It is lipid-soluble, crosses the BBB and blocks central H1 receptors." },
+      { q: "Why is it useful in drug-induced parkinsonism?", a: "Its antimuscarinic action counters extrapyramidal symptoms." },
+    ],
+    mcqs: [
+      {
+        id: "dip-m1",
+        question: "Sedation from diphenhydramine is due to blockade of:",
+        options: ["Peripheral H1 receptors", "Central H1 receptors", "H2 receptors", "Dopamine receptors"],
+        answerIndex: 1,
+        explanation: "Central H1 blockade after crossing the blood-brain barrier causes sedation.",
+      },
+      {
+        id: "dip-m2",
+        question: "Diphenhydramine helps motion sickness mainly through its:",
+        options: ["β-blocking effect", "Central antimuscarinic/antihistaminic action", "Diuretic effect", "α-agonist effect"],
+        answerIndex: 1,
+        explanation: "Central H1 and muscarinic blockade damps vestibular input.",
+      },
+    ],
+  },
+  {
+    id: "chlorpheniramine",
+    name: "Chlorpheniramine",
+    topic: "autacoids",
+    drugClass: "First-generation H1 antihistamine (alkylamine)",
+    moa: "Blocks central and peripheral H1 receptors; as an alkylamine it sedates less than the ethanolamine diphenhydramine.",
+    uses: ["Allergic rhinitis", "Urticaria", "Common-cold combinations"],
+    sideEffects: ["Sedation (less than diphenhydramine)", "Dry mouth", "Dizziness"],
+    contraindications: ["Narrow-angle glaucoma", "Benign prostatic hyperplasia", "Neonates"],
+    interactions: ["Additive CNS depression", "MAO inhibitors intensify antimuscarinic effects"],
+    mnemonic: "\"Chlorpheniramine — the least-sedating first-gen.\"",
+    vivaQuestions: [
+      { q: "Which first-generation antihistamine sedates the least?", a: "Chlorpheniramine (an alkylamine)." },
+    ],
+    mcqs: [
+      {
+        id: "chlor-m1",
+        question: "Among first-generation antihistamines, least sedation is seen with:",
+        options: ["Diphenhydramine", "Promethazine", "Chlorpheniramine", "Hydroxyzine"],
+        answerIndex: 2,
+        explanation: "Alkylamines such as chlorpheniramine are the least sedating first-gen agents.",
+      },
+    ],
+  },
+  {
+    id: "promethazine",
+    name: "Promethazine",
+    topic: "autacoids",
+    drugClass: "First-generation H1 antihistamine (phenothiazine)",
+    moa: "Blocks H1 receptors with strong antimuscarinic, antiemetic (central D2 block) and sedative effects.",
+    uses: ["Motion sickness", "Nausea and vomiting", "Sedation", "Allergic conditions", "Pruritus"],
+    sideEffects: ["Marked sedation", "Antimuscarinic effects", "Photosensitivity", "Respiratory depression in infants"],
+    contraindications: ["Children under 2 years (fatal respiratory depression)", "Narrow-angle glaucoma", "Benign prostatic hyperplasia"],
+    interactions: ["Additive CNS depression", "Additive with other anticholinergics", "Lowers seizure threshold"],
+    mnemonic: "\"Promethazine — Phenothiazine: sedative + antiemetic.\"",
+    vivaQuestions: [
+      { q: "Why is promethazine contraindicated in children under 2?", a: "It can cause fatal respiratory depression." },
+      { q: "How does promethazine act as an antiemetic?", a: "Central D2, H1 and muscarinic blockade in the vomiting centre and vestibular pathway." },
+    ],
+    mcqs: [
+      {
+        id: "prom-m1",
+        question: "Promethazine is contraindicated in children under 2 years because of:",
+        options: ["Hepatotoxicity", "Fatal respiratory depression", "Nephrotoxicity", "Agranulocytosis"],
+        answerIndex: 1,
+        explanation: "Promethazine can cause fatal respiratory depression in infants.",
+      },
+    ],
+  },
+  {
+    id: "cyproheptadine",
+    name: "Cyproheptadine",
+    topic: "autacoids",
+    drugClass: "First-generation H1 antihistamine with 5-HT2 antagonism",
+    moa: "Blocks H1 and 5-HT2 receptors; 5-HT2 blockade stimulates appetite and reverses serotonin excess.",
+    uses: ["Allergic conditions", "Appetite stimulation", "Serotonin syndrome (antidote)", "Cold urticaria"],
+    sideEffects: ["Sedation", "Weight gain", "Dry mouth", "Dizziness"],
+    contraindications: ["Narrow-angle glaucoma", "Benign prostatic hyperplasia", "Neonates"],
+    interactions: ["Additive CNS depression", "May blunt the effect of SSRIs"],
+    mnemonic: "\"Cyproheptadine — blocks Histamine + Serotonin → hunger + serotonin-syndrome antidote.\"",
+    vivaQuestions: [
+      { q: "Which drug is used in serotonin syndrome?", a: "Cyproheptadine, a 5-HT2 antagonist." },
+      { q: "Why does cyproheptadine increase appetite?", a: "5-HT2 blockade in the hypothalamic satiety centre." },
+    ],
+    mcqs: [
+      {
+        id: "cypro-m1",
+        question: "The drug used to treat serotonin syndrome is:",
+        options: ["Ondansetron", "Cyproheptadine", "Sumatriptan", "Fluoxetine"],
+        answerIndex: 1,
+        explanation: "Cyproheptadine blocks 5-HT2 receptors and is the antidote for serotonin syndrome.",
+      },
+      {
+        id: "cypro-m2",
+        question: "Cyproheptadine stimulates appetite by blocking:",
+        options: ["H2 receptors", "5-HT2 receptors", "Dopamine receptors", "GABA receptors"],
+        answerIndex: 1,
+        explanation: "5-HT2 blockade in the satiety centre increases appetite.",
+      },
+    ],
+  },
+  {
+    id: "ondansetron",
+    name: "Ondansetron",
+    topic: "autacoids",
+    drugClass: "5-HT3 receptor antagonist (antiemetic)",
+    moa: "Blocks 5-HT3 receptors on vagal afferents and in the chemoreceptor trigger zone, producing a potent antiemetic effect.",
+    uses: ["Chemotherapy-induced nausea and vomiting", "Post-operative nausea and vomiting", "Radiation-induced vomiting"],
+    sideEffects: ["Headache", "Constipation", "QT prolongation", "Dizziness"],
+    contraindications: ["Congenital long-QT syndrome", "Concurrent apomorphine"],
+    interactions: ["Additive QT prolongation with other QT-prolonging drugs", "Severe hypotension with apomorphine"],
+    mnemonic: "\"The 'setrons' block 5-HT3 and stop vomiting.\"",
+    vivaQuestions: [
+      { q: "How does ondansetron prevent vomiting?", a: "Central and peripheral 5-HT3 receptor blockade." },
+      { q: "What is its important cardiac adverse effect?", a: "QT-interval prolongation." },
+    ],
+    mcqs: [
+      {
+        id: "ond-m1",
+        question: "Ondansetron acts by blocking:",
+        options: ["5-HT1 receptors", "5-HT3 receptors", "Dopamine D2 receptors", "H1 receptors"],
+        answerIndex: 1,
+        explanation: "Ondansetron is a selective 5-HT3 antagonist.",
+      },
+      {
+        id: "ond-m2",
+        question: "A cardiac adverse effect of ondansetron is:",
+        options: ["Bradycardia", "QT prolongation", "Complete heart block", "Hypertension"],
+        answerIndex: 1,
+        explanation: "Ondansetron can prolong the QT interval.",
+      },
+    ],
+  },
+  {
+    id: "sumatriptan",
+    name: "Sumatriptan",
+    topic: "autacoids",
+    drugClass: "5-HT1B/1D receptor agonist (triptan)",
+    moa: "Agonist at 5-HT1B/1D receptors → cranial vasoconstriction and reduced release of trigeminal neuropeptides, aborting a migraine.",
+    uses: ["Acute migraine", "Cluster headache"],
+    sideEffects: ["Chest tightness / pressure", "Paresthesia", "Flushing", "Coronary vasospasm (rare)"],
+    contraindications: ["Ischemic heart disease", "Prinzmetal (variant) angina", "Uncontrolled hypertension", "Recent ergot use"],
+    interactions: ["Ergot alkaloids (additive vasospasm — separate by 24 h)", "MAO inhibitors raise levels", "SSRIs/SNRIs risk serotonin syndrome"],
+    mnemonic: "\"Triptans Terminate migraine — but not in ischemic heart disease.\"",
+    vivaQuestions: [
+      { q: "Why is sumatriptan contraindicated in ischemic heart disease?", a: "It causes coronary vasoconstriction via 5-HT1B receptors on vascular smooth muscle." },
+      { q: "Why must triptans and ergotamine be separated by 24 hours?", a: "Their vasoconstrictor effects are additive and can cause dangerous vasospasm." },
+    ],
+    mcqs: [
+      {
+        id: "suma-m1",
+        question: "Sumatriptan aborts migraine by acting as an agonist at:",
+        options: ["5-HT2 receptors", "5-HT1B/1D receptors", "5-HT3 receptors", "5-HT4 receptors"],
+        answerIndex: 1,
+        explanation: "Triptans are 5-HT1B/1D agonists causing cranial vasoconstriction.",
+      },
+      {
+        id: "suma-m2",
+        question: "Sumatriptan is contraindicated in:",
+        options: ["Migraine with aura", "Ischemic heart disease", "Young adults", "Menstrual migraine"],
+        answerIndex: 1,
+        explanation: "Coronary vasoconstriction makes it unsafe in ischemic heart disease.",
+      },
+    ],
+  },
+  {
+    id: "ergotamine",
+    name: "Ergotamine",
+    topic: "autacoids",
+    drugClass: "Ergot alkaloid (partial agonist at 5-HT, α-adrenergic and dopamine receptors)",
+    moa: "Non-selective 5-HT1 and α-adrenergic agonism produces cranial vasoconstriction that aborts migraine; prolonged action risks sustained vasospasm.",
+    uses: ["Acute migraine (often with caffeine)", "Cluster headache"],
+    sideEffects: ["Nausea and vomiting", "Peripheral ischemia (ergotism)", "Paresthesia", "Vasospasm"],
+    contraindications: ["Pregnancy", "Peripheral vascular disease", "Ischemic heart disease", "Hepatic or renal impairment"],
+    interactions: ["CYP3A4 inhibitors (macrolides, azoles, protease inhibitors) → severe ergotism", "Triptans (additive vasospasm)"],
+    mnemonic: "\"Ergot = vasoconstriction → gangrene; never in pregnancy.\"",
+    vivaQuestions: [
+      { q: "What is ergotism?", a: "Severe peripheral vasospasm from ergot excess → cold, painful, potentially gangrenous limbs." },
+      { q: "Why is ergotamine contraindicated in pregnancy?", a: "It is a uterine stimulant (oxytocic) and vasoconstrictor." },
+    ],
+    mcqs: [
+      {
+        id: "ergo-m1",
+        question: "Prolonged or excessive ergotamine use can cause:",
+        options: ["Peripheral gangrene", "Pulmonary fibrosis", "Renal stones", "Hemolytic anemia"],
+        answerIndex: 0,
+        explanation: "Sustained vasoconstriction (ergotism) can progress to peripheral gangrene.",
+      },
+    ],
+  },
+  {
+    id: "misoprostol",
+    name: "Misoprostol",
+    topic: "autacoids",
+    drugClass: "Prostaglandin E1 (PGE1) analogue",
+    moa: "PGE1 agonist that reduces gastric acid secretion and increases protective mucus and bicarbonate; also stimulates uterine contraction.",
+    uses: ["Prevention of NSAID-induced peptic ulcers", "Medical abortion (with mifepristone)", "Cervical ripening / labour induction", "Postpartum hemorrhage"],
+    sideEffects: ["Diarrhea", "Abdominal cramps", "Uterine bleeding", "Miscarriage"],
+    contraindications: ["Pregnancy (when used for ulcer prevention)", "Hypersensitivity"],
+    interactions: ["Magnesium-containing antacids worsen diarrhea"],
+    mnemonic: "\"Misoprostol — Mucus & bicarbonate up; Miscarriage risk.\"",
+    vivaQuestions: [
+      { q: "Why is misoprostol given with long-term NSAIDs?", a: "It replaces the protective prostaglandins NSAIDs inhibit, preventing gastric ulcers." },
+      { q: "Why is it contraindicated in pregnancy for ulcer use?", a: "It causes uterine contractions and can induce abortion." },
+    ],
+    mcqs: [
+      {
+        id: "miso-m1",
+        question: "Misoprostol prevents NSAID-induced ulcers because it is a:",
+        options: ["PGE1 analogue", "H2 blocker", "Proton pump inhibitor", "Muscarinic antagonist"],
+        answerIndex: 0,
+        explanation: "As a PGE1 analogue it restores cytoprotective prostaglandin activity.",
+      },
+    ],
+  },
+  {
+    id: "latanoprost",
+    name: "Latanoprost",
+    topic: "autacoids",
+    drugClass: "Prostaglandin F2α (PGF2α) analogue",
+    moa: "PGF2α agonist that increases uveoscleral outflow of aqueous humour, lowering intraocular pressure.",
+    uses: ["Open-angle glaucoma (first-line topical)", "Ocular hypertension"],
+    sideEffects: ["Iris hyperpigmentation (brown)", "Eyelash lengthening and darkening", "Conjunctival hyperemia", "Periorbital pigmentation"],
+    contraindications: ["Hypersensitivity", "Caution in uveitis and macular edema"],
+    interactions: ["Minimal systemic interaction (topical)"],
+    mnemonic: "\"Latanoprost — Longer, darker lashes; brown iris; lowers eye pressure.\"",
+    vivaQuestions: [
+      { q: "How does latanoprost lower intraocular pressure?", a: "By increasing uveoscleral outflow of aqueous humour." },
+      { q: "What is its characteristic cosmetic side effect?", a: "Iris and periorbital hyperpigmentation with eyelash growth." },
+    ],
+    mcqs: [
+      {
+        id: "lata-m1",
+        question: "Latanoprost lowers intraocular pressure by:",
+        options: ["Decreasing aqueous production", "Increasing uveoscleral outflow", "Blocking β receptors", "Constricting the pupil"],
+        answerIndex: 1,
+        explanation: "PGF2α analogues increase uveoscleral outflow of aqueous humour.",
+      },
+      {
+        id: "lata-m2",
+        question: "A characteristic side effect of latanoprost is:",
+        options: ["Iris hyperpigmentation", "Cataract", "Corneal ulcer", "Night blindness"],
+        answerIndex: 0,
+        explanation: "Increased iris melanin causes brown pigmentation, along with eyelash growth.",
+      },
+    ],
+  },
 
   // ═══════════════════ ADDED HIGH-YIELD DRUGS ═══════════════════
 
@@ -1078,6 +1401,272 @@ const CORE_DRUGS: Drug[] = [
       },
     ],
   },
+  {
+    id: "benzylpenicillin",
+    name: "Benzylpenicillin (Penicillin G)",
+    topic: "antibiotics",
+    drugClass: "Natural penicillin (β-lactam)",
+    moa: "Binds penicillin-binding proteins and blocks cross-linking of the peptidoglycan cell wall, giving a bactericidal effect on dividing bacteria.",
+    uses: ["Streptococcal infections", "Syphilis", "Meningococcal disease", "Rheumatic fever prophylaxis (benzathine)", "Gas gangrene"],
+    sideEffects: ["Hypersensitivity / anaphylaxis", "Rash", "Jarisch-Herxheimer reaction in syphilis", "Seizures at very high doses"],
+    contraindications: ["Penicillin hypersensitivity"],
+    interactions: ["Probenecid raises levels by blocking renal tubular secretion", "May reduce efficacy of oral contraceptives"],
+    mnemonic: "\"Penicillin G — Given by injection (acid-labile), Gram-positive cover, Gone quickly.\"",
+    vivaQuestions: [
+      { q: "Drug of choice for syphilis?", a: "Benzylpenicillin — long-acting benzathine penicillin." },
+      { q: "Why can benzylpenicillin not be given orally?", a: "It is acid-labile and destroyed by gastric acid." },
+    ],
+    mcqs: [
+      {
+        id: "benzpen-m1",
+        question: "Penicillins are bactericidal because they inhibit:",
+        options: ["Protein synthesis", "Cell-wall synthesis", "DNA gyrase", "Folate synthesis"],
+        answerIndex: 1,
+        explanation: "β-lactams block peptidoglycan cross-linking in the bacterial cell wall.",
+      },
+      {
+        id: "benzpen-m2",
+        question: "Probenecid raises penicillin levels by:",
+        options: ["Enhancing absorption", "Blocking renal tubular secretion", "Inhibiting liver metabolism", "Displacing protein binding"],
+        answerIndex: 1,
+        explanation: "Probenecid competes for the renal organic-acid transporter, slowing penicillin excretion.",
+      },
+    ],
+  },
+  {
+    id: "amoxicillin-clavulanate",
+    name: "Amoxicillin–Clavulanate (Co-amoxiclav)",
+    topic: "antibiotics",
+    drugClass: "Aminopenicillin + β-lactamase inhibitor",
+    moa: "Amoxicillin inhibits cell-wall synthesis while clavulanic acid irreversibly inhibits β-lactamase, protecting amoxicillin and extending its spectrum.",
+    uses: ["Otitis media", "Sinusitis", "Lower respiratory infections", "Animal and human bites", "Urinary tract infection"],
+    sideEffects: ["Diarrhea (clavulanate)", "Rash", "Cholestatic hepatotoxicity (uncommon)", "Hypersensitivity"],
+    contraindications: ["Penicillin hypersensitivity", "Previous co-amoxiclav-associated jaundice"],
+    interactions: ["Probenecid raises amoxicillin levels", "Allopurinol increases rash risk"],
+    mnemonic: "\"Clavulanate 'clavs' open the β-lactamase lock so amoxicillin can work.\"",
+    vivaQuestions: [
+      { q: "What is the role of clavulanic acid?", a: "It is a β-lactamase inhibitor that protects amoxicillin from enzymatic breakdown." },
+      { q: "Why does co-amoxiclav cause more diarrhea than plain amoxicillin?", a: "The clavulanate component." },
+    ],
+    mcqs: [
+      {
+        id: "coamox-m1",
+        question: "Clavulanic acid is combined with amoxicillin to:",
+        options: ["Increase absorption", "Inhibit β-lactamase", "Prolong the half-life", "Reduce allergy risk"],
+        answerIndex: 1,
+        explanation: "Clavulanate inactivates β-lactamase, protecting amoxicillin.",
+      },
+    ],
+  },
+  {
+    id: "piperacillin-tazobactam",
+    name: "Piperacillin–Tazobactam",
+    topic: "antibiotics",
+    drugClass: "Antipseudomonal penicillin + β-lactamase inhibitor",
+    moa: "Piperacillin inhibits cell-wall synthesis with broad Gram-negative cover including Pseudomonas; tazobactam inhibits β-lactamase to preserve activity.",
+    uses: ["Hospital-acquired infections", "Febrile neutropenia", "Intra-abdominal sepsis", "Pseudomonas infections"],
+    sideEffects: ["Diarrhea", "Hypersensitivity", "Hypokalemia", "Thrombocytopenia"],
+    contraindications: ["Penicillin hypersensitivity"],
+    interactions: ["Additive nephrotoxicity with vancomycin", "Prolongs non-depolarizing neuromuscular blockade", "Probenecid raises levels"],
+    mnemonic: "\"Pip-Tazo — Pseudomonas + broad cover for the sick, hospitalized patient.\"",
+    vivaQuestions: [
+      { q: "Why is piperacillin-tazobactam chosen in febrile neutropenia?", a: "It gives broad-spectrum cover including antipseudomonal activity." },
+    ],
+    mcqs: [
+      {
+        id: "piptazo-m1",
+        question: "Piperacillin-tazobactam is particularly valued for activity against:",
+        options: ["MRSA", "Pseudomonas aeruginosa", "Mycobacterium tuberculosis", "Anaerobes only"],
+        answerIndex: 1,
+        explanation: "Piperacillin has strong antipseudomonal cover.",
+      },
+    ],
+  },
+  {
+    id: "cefepime",
+    name: "Cefepime",
+    topic: "antibiotics",
+    drugClass: "Fourth-generation cephalosporin (β-lactam)",
+    moa: "Inhibits cell-wall synthesis with broad Gram-positive and Gram-negative cover including Pseudomonas, and is stable against many β-lactamases.",
+    uses: ["Nosocomial pneumonia", "Febrile neutropenia", "Complicated urinary tract infection", "Pseudomonas infections"],
+    sideEffects: ["Hypersensitivity", "Neurotoxicity / encephalopathy (esp. in renal impairment)", "Diarrhea", "C. difficile colitis"],
+    contraindications: ["Cephalosporin hypersensitivity", "Dose adjustment needed in renal impairment"],
+    interactions: ["Additive nephrotoxicity with aminoglycosides"],
+    mnemonic: "\"Cefepime — 4th-gen: covers Gram-positives AND Pseudomonas.\"",
+    vivaQuestions: [
+      { q: "What does 4th-generation cefepime add over 3rd-generation cephalosporins?", a: "Antipseudomonal activity while keeping good Gram-positive cover." },
+      { q: "Neurological adverse effect of cefepime in renal failure?", a: "Encephalopathy (cefepime neurotoxicity)." },
+    ],
+    mcqs: [
+      {
+        id: "cefepime-m1",
+        question: "Cefepime is a cephalosporin of which generation?",
+        options: ["First", "Second", "Third", "Fourth"],
+        answerIndex: 3,
+        explanation: "Cefepime is a fourth-generation cephalosporin with antipseudomonal cover.",
+      },
+    ],
+  },
+  {
+    id: "meropenem",
+    name: "Meropenem",
+    topic: "antibiotics",
+    drugClass: "Carbapenem (β-lactam)",
+    moa: "Inhibits cell-wall synthesis with an ultra-broad spectrum (Gram-positive, Gram-negative and anaerobes) and high stability to β-lactamases.",
+    uses: ["Severe or multidrug-resistant infections", "Intra-abdominal sepsis", "Meningitis", "Febrile neutropenia"],
+    sideEffects: ["Diarrhea", "Hypersensitivity", "Seizures (less than imipenem)", "C. difficile colitis"],
+    contraindications: ["Carbapenem / β-lactam hypersensitivity"],
+    interactions: ["Markedly lowers valproate levels (risking seizures)", "Probenecid raises levels"],
+    mnemonic: "\"Meropenem — the 'big gun': broadest β-lactam, reserve for resistant bugs.\"",
+    vivaQuestions: [
+      { q: "Why is meropenem often preferred over imipenem?", a: "Lower seizure risk and no need for cilastatin." },
+      { q: "Important interaction of carbapenems with valproate?", a: "They sharply reduce valproate levels, which can precipitate seizures." },
+    ],
+    mcqs: [
+      {
+        id: "mero-m1",
+        question: "Carbapenems such as meropenem must be used cautiously with:",
+        options: ["Warfarin", "Valproate", "Metformin", "Statins"],
+        answerIndex: 1,
+        explanation: "Carbapenems lower serum valproate, risking loss of seizure control.",
+      },
+      {
+        id: "mero-m2",
+        question: "Meropenem belongs to which class of antibiotics?",
+        options: ["Glycopeptide", "Carbapenem", "Macrolide", "Aminoglycoside"],
+        answerIndex: 1,
+        explanation: "Meropenem is a carbapenem β-lactam.",
+      },
+    ],
+  },
+  {
+    id: "clindamycin",
+    name: "Clindamycin",
+    topic: "antibiotics",
+    drugClass: "Lincosamide (protein-synthesis inhibitor)",
+    moa: "Binds the 50S ribosomal subunit and inhibits protein synthesis; active against Gram-positives and anaerobes, and suppresses toxin production.",
+    uses: ["Anaerobic infections above the diaphragm", "Skin and soft-tissue infections", "Necrotizing fasciitis / toxic shock (toxin suppression)", "Dental infections"],
+    sideEffects: ["Pseudomembranous colitis (C. difficile)", "Diarrhea", "Rash", "Metallic taste (uncommon)"],
+    contraindications: ["Hypersensitivity", "Previous C. difficile colitis"],
+    interactions: ["Additive neuromuscular blockade", "Antagonism with macrolides (shared 50S site)"],
+    mnemonic: "\"Clindamycin — Classic Cause of C. difficile Colitis.\"",
+    vivaQuestions: [
+      { q: "Which antibiotic is most classically linked to pseudomembranous colitis?", a: "Clindamycin (C. difficile overgrowth)." },
+      { q: "Why is clindamycin added in necrotizing fasciitis?", a: "It suppresses bacterial toxin (protein) production." },
+    ],
+    mcqs: [
+      {
+        id: "clinda-m1",
+        question: "The antibiotic most classically associated with pseudomembranous colitis is:",
+        options: ["Clindamycin", "Gentamicin", "Vancomycin", "Doxycycline"],
+        answerIndex: 0,
+        explanation: "Clindamycin is the classic trigger of C. difficile colitis.",
+      },
+      {
+        id: "clinda-m2",
+        question: "Clindamycin inhibits bacterial protein synthesis at the:",
+        options: ["30S subunit", "50S subunit", "DNA gyrase", "Cell wall"],
+        answerIndex: 1,
+        explanation: "Lincosamides bind the 50S ribosomal subunit.",
+      },
+    ],
+  },
+  {
+    id: "metronidazole",
+    name: "Metronidazole",
+    topic: "antibiotics",
+    drugClass: "Nitroimidazole (antibacterial and antiprotozoal)",
+    moa: "Reduced inside anaerobic organisms to reactive intermediates that fragment microbial DNA, giving a bactericidal effect against anaerobes and protozoa.",
+    uses: ["Anaerobic infections below the diaphragm", "Clostridioides difficile colitis", "Amoebiasis", "Giardiasis", "Trichomoniasis", "Bacterial vaginosis", "H. pylori regimens"],
+    sideEffects: ["Metallic taste", "Nausea", "Disulfiram-like reaction with alcohol", "Peripheral neuropathy (prolonged use)", "Dark urine"],
+    contraindications: ["Alcohol intake", "First trimester of pregnancy (caution)", "Hypersensitivity"],
+    interactions: ["Alcohol → disulfiram-like reaction", "Potentiates warfarin", "Raises lithium and phenytoin levels"],
+    mnemonic: "\"Metronidazole — Metallic taste, no alcohol; kills anaerobes below the diaphragm.\"",
+    vivaQuestions: [
+      { q: "Why must alcohol be avoided on metronidazole?", a: "It inhibits aldehyde dehydrogenase, causing a disulfiram-like reaction (flushing, vomiting)." },
+      { q: "Metronidazole covers anaerobes in which region?", a: "Below the diaphragm — abdominal and pelvic infections." },
+    ],
+    mcqs: [
+      {
+        id: "metro-m1",
+        question: "A patient taking metronidazole must strictly avoid:",
+        options: ["Dairy products", "Alcohol", "Citrus fruit", "Iron tablets"],
+        answerIndex: 1,
+        explanation: "Metronidazole with alcohol causes a disulfiram-like reaction.",
+      },
+      {
+        id: "metro-m2",
+        question: "Metronidazole is effective against:",
+        options: ["Aerobic Gram-negative rods", "Anaerobes and protozoa", "Mycobacteria", "Fungi"],
+        answerIndex: 1,
+        explanation: "It targets anaerobic bacteria and protozoa.",
+      },
+    ],
+  },
+  {
+    id: "linezolid",
+    name: "Linezolid",
+    topic: "antibiotics",
+    drugClass: "Oxazolidinone (protein-synthesis inhibitor)",
+    moa: "Binds the 23S rRNA of the 50S subunit and prevents formation of the initiation complex; bacteriostatic against Gram-positives including MRSA and VRE.",
+    uses: ["MRSA infections", "Vancomycin-resistant enterococci (VRE)", "Gram-positive pneumonia", "Complicated skin infections"],
+    sideEffects: ["Thrombocytopenia / myelosuppression (prolonged use)", "Peripheral and optic neuropathy", "Serotonin syndrome", "Lactic acidosis"],
+    contraindications: ["Concurrent MAO inhibitors", "Caution with serotonergic drugs and uncontrolled hypertension"],
+    interactions: ["SSRIs / MAOIs → serotonin syndrome (linezolid is a weak MAOI)", "Tyramine-rich foods → hypertension"],
+    mnemonic: "\"Linezolid — Last-line for VRE/MRSA; watch platelets and serotonin syndrome.\"",
+    vivaQuestions: [
+      { q: "What is the main use of linezolid?", a: "Serious Gram-positive infections including MRSA and VRE." },
+      { q: "Why can linezolid cause serotonin syndrome?", a: "It is a weak, non-selective MAO inhibitor." },
+    ],
+    mcqs: [
+      {
+        id: "line-m1",
+        question: "Linezolid is especially useful against:",
+        options: ["Pseudomonas", "VRE and MRSA", "Anaerobes", "Mycobacteria"],
+        answerIndex: 1,
+        explanation: "Linezolid is reserved for resistant Gram-positives such as MRSA and VRE.",
+      },
+      {
+        id: "line-m2",
+        question: "A serious adverse effect of prolonged linezolid therapy is:",
+        options: ["Nephrotoxicity", "Thrombocytopenia", "Ototoxicity", "Hepatitis"],
+        answerIndex: 1,
+        explanation: "Bone-marrow suppression, especially thrombocytopenia, occurs with prolonged use.",
+      },
+    ],
+  },
+  {
+    id: "cotrimoxazole",
+    name: "Cotrimoxazole (Trimethoprim–Sulfamethoxazole)",
+    topic: "antibiotics",
+    drugClass: "Folate-synthesis inhibitor combination (sulfonamide + trimethoprim)",
+    moa: "Sulfamethoxazole blocks dihydropteroate synthase and trimethoprim blocks dihydrofolate reductase — sequential blockade of folate synthesis gives a synergistic bactericidal effect.",
+    uses: ["Urinary tract infection", "Pneumocystis jirovecii pneumonia (treatment and prophylaxis)", "Toxoplasmosis", "Nocardiosis", "Some MRSA infections"],
+    sideEffects: ["Hypersensitivity / Stevens-Johnson syndrome", "Hyperkalemia", "Megaloblastic anemia", "Crystalluria", "Kernicterus in neonates"],
+    contraindications: ["Pregnancy near term and neonates", "Sulfa allergy", "Severe renal impairment", "G6PD deficiency"],
+    interactions: ["Potentiates warfarin", "Raises methotrexate toxicity", "Hyperkalemia with ACE inhibitors/ARBs/spironolactone"],
+    mnemonic: "\"Cotrimoxazole — double folate block; drug of choice for PCP.\"",
+    vivaQuestions: [
+      { q: "Drug of choice for Pneumocystis jirovecii pneumonia?", a: "Cotrimoxazole." },
+      { q: "Why is the combination synergistic?", a: "It blocks two sequential steps of bacterial folate synthesis." },
+    ],
+    mcqs: [
+      {
+        id: "cotrim-m1",
+        question: "Cotrimoxazole is the drug of choice for:",
+        options: ["Tuberculosis", "Pneumocystis jirovecii pneumonia", "Malaria", "Candidiasis"],
+        answerIndex: 1,
+        explanation: "Cotrimoxazole is first-line for Pneumocystis jirovecii pneumonia.",
+      },
+      {
+        id: "cotrim-m2",
+        question: "Cotrimoxazole works by inhibiting:",
+        options: ["Cell-wall synthesis", "Sequential folate synthesis", "DNA gyrase", "Protein synthesis"],
+        answerIndex: 1,
+        explanation: "It blocks two steps in the folate pathway (dihydropteroate synthase and dihydrofolate reductase).",
+      },
+    ],
+  },
 
   // ── Antimicrobials (Anti-TB) ──
   {
@@ -1255,12 +1844,18 @@ const IMPORTANT_FOR_EXAM = new Set<string>([
   "haloperidol", "lidocaine", "amoxicillin", "ceftriaxone", "azithromycin", "gentamicin",
   "ciprofloxacin", "doxycycline", "vancomycin", "isoniazid", "rifampicin", "insulin",
   "metformin", "levothyroxine", "prednisolone", "paracetamol", "aspirin", "ibuprofen",
+  "cetirizine", "diphenhydramine", "promethazine", "cyproheptadine", "ondansetron",
+  "sumatriptan", "misoprostol", "latanoprost",
+  "benzylpenicillin", "amoxicillin-clavulanate", "piperacillin-tazobactam", "cefepime",
+  "meropenem", "clindamycin", "metronidazole", "linezolid", "cotrimoxazole",
 ]);
 
 const ASKED_FREQUENTLY = new Set<string>([
   "atropine", "adrenaline", "propranolol", "metoprolol", "furosemide", "enalapril",
   "digoxin", "diazepam", "morphine", "phenytoin", "amoxicillin", "gentamicin",
   "isoniazid", "rifampicin", "insulin", "metformin", "aspirin", "paracetamol",
+  "diphenhydramine", "ondansetron", "sumatriptan", "misoprostol",
+  "benzylpenicillin", "meropenem", "clindamycin", "metronidazole", "cotrimoxazole",
 ]);
 
 // Final drug list = core drugs + any JSON/CSV imports, with exam tags applied.
@@ -1270,6 +1865,22 @@ export const DRUGS: Drug[] = [...CORE_DRUGS, ...(extraDrugs as Drug[])].map((d) 
   importantForExam: d.importantForExam ?? IMPORTANT_FOR_EXAM.has(d.id),
   askedFrequently: d.askedFrequently ?? ASKED_FREQUENTLY.has(d.id),
 }));
+
+// Fail fast on duplicate drug IDs. getDrug() and the /drug/[id] route rely on
+// find(), which silently returns only the first match — a duplicate id would
+// hide a drug and double it in flashcards/MCQs. This throws at module load
+// (build + dev), so mistakes surface immediately rather than shipping.
+(function assertUniqueDrugIds(list: Drug[]) {
+  const seen = new Set<string>();
+  const dups = new Set<string>();
+  for (const d of list) {
+    if (seen.has(d.id)) dups.add(d.id);
+    seen.add(d.id);
+  }
+  if (dups.size) {
+    throw new Error(`Duplicate drug id(s) in drug data: ${[...dups].join(", ")}`);
+  }
+})(DRUGS);
 
 export function getDrug(id: string): Drug | undefined {
   return DRUGS.find((d) => d.id === id);
