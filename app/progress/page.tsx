@@ -12,9 +12,12 @@ import {
   getCardDifficulty,
   getSubjectMCQScores,
   getStreak,
+  getMistakes,
+  getDueMistakes,
   useStoreTick,
 } from "@/lib/store";
 import { getFlashcards } from "@/lib/content";
+import { topMistakeReason, weakestTopicByMistakes, accuracyByCompetency, coachingLine } from "@/lib/mistakes";
 
 export default function ProgressPage() {
   useStoreTick();
@@ -68,6 +71,14 @@ export default function ProgressPage() {
   );
   const weakList = TOPICS.filter((t) => !completed.includes(t.slug));
   const nextTopic = weakList[0];
+
+  // ── Mistake Intelligence coaching signals ──
+  const mistakes = mounted ? getMistakes() : [];
+  const dueMistakes = mounted ? getDueMistakes().length : 0;
+  const topReason = mounted ? topMistakeReason() : null;
+  const weakMistakeTopic = mounted ? weakestTopicByMistakes() : null;
+  const compAccuracy = mounted ? accuracyByCompetency() : [];
+  const coaching = mounted ? coachingLine() : null;
 
   return (
     <div className="space-y-6">
@@ -128,6 +139,67 @@ export default function ProgressPage() {
           )}
         </div>
       </div>
+
+      {/* Mistake Intelligence — coaching from the Wrong-Answer Notebook */}
+      {mistakes.length > 0 && (
+        <div className="card p-5">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <span className="section-title">🧠 Mistake insights</span>
+            <Link href="/wrong-notebook" className="text-xs font-medium text-brand-600 hover:text-brand-700">
+              Open notebook{dueMistakes > 0 ? ` · ${dueMistakes} due` : ""} →
+            </Link>
+          </div>
+
+          {coaching && (
+            <p className="rounded-xl bg-amber-50 p-3 text-sm text-amber-800">💡 {coaching}</p>
+          )}
+
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-xl border border-slate-200 p-3">
+              <div className="text-[11px] text-slate-400">Most common mistake reason</div>
+              <div className="mt-0.5 text-sm font-semibold text-slate-800">
+                {topReason ? topReason.label : "Not enough data yet"}
+              </div>
+              {topReason && <div className="text-[11px] text-slate-400">{topReason.count} tagged</div>}
+            </div>
+            <div className="rounded-xl border border-slate-200 p-3">
+              <div className="text-[11px] text-slate-400">Weakest topic by wrong answers</div>
+              <div className="mt-0.5 text-sm font-semibold text-slate-800">
+                {weakMistakeTopic ? weakMistakeTopic.title : "None"}
+              </div>
+              {weakMistakeTopic && (
+                <div className="text-[11px] text-slate-400">
+                  {weakMistakeTopic.count} unresolved
+                </div>
+              )}
+            </div>
+          </div>
+
+          {compAccuracy.length > 0 && (
+            <div className="mt-3">
+              <div className="mb-2 text-xs font-semibold text-slate-500">Accuracy by competency</div>
+              <div className="space-y-2">
+                {compAccuracy.map((c) => (
+                  <div key={c.competency}>
+                    <div className="mb-1 flex justify-between text-xs text-slate-500">
+                      <span>{c.label}</span>
+                      <span>
+                        {c.accuracy}% <span className="text-slate-400">({c.correct}/{c.attempted})</span>
+                      </span>
+                    </div>
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                      <div
+                        className={`h-full rounded-full ${c.accuracy >= 80 ? "bg-green-400" : c.accuracy >= 60 ? "bg-amber-400" : "bg-rose-400"}`}
+                        style={{ width: `${c.accuracy}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Weak topics — gentle nudges, not a scolding list */}
       <div className="card p-5">

@@ -3,11 +3,22 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { getMCQs, getVivaQuestions, getShortAnswers, seededShuffle, shuffleMCQOptions, hashString, MCQWithMeta, ShortAnswerQ } from "@/lib/content";
+import { getMCQs, getVivaQuestions, getShortAnswers, seededShuffle, shuffleMCQOptions, hashString, mcqMeta, MCQWithMeta, ShortAnswerQ } from "@/lib/content";
 import { getImportantDrugs } from "@/lib/drugs";
 import { PRESCRIPTIONS } from "@/lib/prescriptions";
 import { TOPICS, getTopic } from "@/lib/topics";
-import { addMCQAttempt, getMCQHistory, useStoreTick, useHydrated } from "@/lib/store";
+import {
+  addMCQAttempt,
+  getMCQHistory,
+  useStoreTick,
+  useHydrated,
+  recordMistake,
+  recordCompetencyResult,
+  setMistakeReason,
+  getMistakes,
+  MISTAKE_REASONS,
+  MistakeReason,
+} from "@/lib/store";
 import { ShortcutsBar } from "@/components/Shortcuts";
 
 type Mode = "menu" | "test" | "result" | "viva" | "shortanswer" | "prescription";
@@ -59,6 +70,33 @@ function ExamInner() {
     setMode("result");
   }
 
+  // Record a selected answer once. Tallies competency accuracy always, and adds
+  // wrong answers to the Wrong-Answer Notebook (Mistake Intelligence).
+  function answerQuestion(idx: number) {
+    const cur = questions[current];
+    if (!cur || answers[current] !== undefined) return;
+    const meta = mcqMeta(cur);
+    const correct = idx === cur.answerIndex;
+    recordCompetencyResult(meta.competency, correct);
+    if (!correct) {
+      recordMistake({
+        mcqId: cur.id,
+        subject: "pharmacology",
+        question: cur.question,
+        options: cur.options,
+        answerIndex: cur.answerIndex,
+        chosenIndex: idx,
+        explanation: cur.explanation,
+        topic: cur.topic,
+        topicTitle: getTopic(cur.topic)?.title,
+        drug: cur.drugName,
+        difficulty: meta.difficulty,
+        competency: meta.competency,
+      });
+    }
+    setAnswers((a) => ({ ...a, [current]: idx }));
+  }
+
   // MCQ test-mode shortcuts: 1–4 select an option, → advance once answered.
   useEffect(() => {
     if (mode !== "test") return;
@@ -71,7 +109,7 @@ function ExamInner() {
         const idx = Number(e.key) - 1;
         if (!answered && idx < q.options.length) {
           e.preventDefault();
-          setAnswers((a) => ({ ...a, [current]: idx }));
+          answerQuestion(idx);
         }
       } else if (e.key === "ArrowRight") {
         if (answered) {
@@ -134,7 +172,7 @@ function ExamInner() {
               <button
                 key={i}
                 disabled={answered}
-                onClick={() => setAnswers((a) => ({ ...a, [current]: i }))}
+                onClick={() => answerQuestion(i)}
                 className={`flex w-full items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition ${cls}`}
               >
                 <span className="flex h-5 w-5 items-center justify-center rounded-full border border-current text-[11px]">
@@ -149,6 +187,9 @@ function ExamInner() {
           <div className="mt-3 rounded-lg bg-slate-50 p-3 text-xs text-slate-600">
             <span className="font-semibold">Explanation: </span>{q.explanation}
           </div>
+        )}
+        {picked !== undefined && picked !== q.answerIndex && (
+          <MistakeReasonSelector key={q.id} mcqId={q.id} />
         )}
       </div>
 
@@ -480,6 +521,48 @@ function PrescriptionMode({ back }: { back: () => void }) {
         <button onClick={() => { setShow(false); setI((n) => (n + 1) % PRESCRIPTIONS.length); }} className="btn-primary flex-1">Next →</button>
       </div>
       <p className="text-center text-xs text-slate-400">Format: Rp. (drug + strength) → D.t.d. N. (quantity) → S. (directions).</p>
+    </div>
+  );
+}
+
+// Shown under a wrong answer: lets the student tag WHY they missed it, so the
+// mistake is categorised in their Wrong-Answer Notebook. Correct answers never
+// see this. Self-contained local state (this only renders after answering).
+function MistakeReasonSelector({ mcqId }: { mcqId: string }) {
+  const [reason, setReason] = useState<MistakeReason | undefined>(
+    () => getMistakes().find((m) => m.mcqId === mcqId)?.reason,
+  );
+  function pick(r: MistakeReason) {
+    setMistakeReason(mcqId, r);
+    setReason(r);
+  }
+  return (
+    <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3">
+      <div className="text-xs font-semibold text-amber-800">Why did you miss this?</div>
+      <p className="mt-0.5 text-[11px] text-amber-700/80">
+        Tag it so it comes back in your revision notebook at the right time.
+      </p>
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {MISTAKE_REASONS.map((r) => (
+          <button
+            key={r.id}
+            onClick={() => pick(r.id)}
+            aria-pressed={reason === r.id}
+            className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition ${
+              reason === r.id
+                ? "border-amber-500 bg-amber-500 text-white"
+                : "border-amber-300 bg-white text-amber-800 hover:bg-amber-100"
+            }`}
+          >
+            {r.label}
+          </button>
+        ))}
+      </div>
+      {reason && (
+        <div className="mt-2 text-[11px] font-medium text-amber-700">
+          ✓ Saved to your Wrong-Answer Notebook.
+        </div>
+      )}
     </div>
   );
 }

@@ -23,12 +23,27 @@ export interface Topic {
   reference?: string;
 }
 
+// Competency an MCQ tests — used by Mistake Intelligence for coaching insights.
+export type Competency =
+  | "moa"
+  | "uses"
+  | "adverse-effects"
+  | "contraindications"
+  | "interactions"
+  | "viva"
+  | "general";
+
 export interface MCQ {
   id: string;
   question: string;
   options: string[];
   answerIndex: number;
   explanation: string;
+  // Optional metadata (Mistake Intelligence). Missing values fall back to safe
+  // defaults in mcqMeta(), so existing MCQs need no changes.
+  difficulty?: Difficulty;
+  competency?: Competency;
+  expectedTimeSeconds?: number;
 }
 
 export interface Drug {

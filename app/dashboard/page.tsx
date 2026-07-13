@@ -21,9 +21,12 @@ import {
   getMCQHistory,
   getStudyPlanDone,
   isPlanCompletedToday,
+  getMistakes,
+  getDueMistakes,
   STUDY_PLAN_TASK_COUNT,
   useStoreTick,
 } from "@/lib/store";
+import { weakestTopicByMistakes } from "@/lib/mistakes";
 
 function daysUntil(dateStr: string): number | null {
   if (!dateStr) return null;
@@ -73,6 +76,11 @@ export default function DashboardPage() {
   const planAllDone = planDone === STUDY_PLAN_TASK_COUNT;
   const planCompletedToday = mounted ? isPlanCompletedToday() : false;
 
+  // Mistake Intelligence: mistakes due for spaced revision today.
+  const mistakeCount = mounted ? getMistakes().length : 0;
+  const dueCount = mounted ? getDueMistakes().length : 0;
+  const weakMistakeTopic = mounted ? weakestTopicByMistakes() : null;
+
   // "Med fact of the day" — deterministic daily rotation. Hydration-safe: the
   // first fact until mounted, then the real day's fact (server/client dates can
   // differ, so it must be computed client-side).
@@ -116,6 +124,31 @@ export default function DashboardPage() {
         />
         <StatCard label="MCQ accuracy" ringPercent={accuracy} sub={`${totalQ} attempted`} />
       </div>
+
+      {/* Mistakes due for revision today (Mistake Intelligence) */}
+      {mounted && mistakeCount > 0 && (
+        <Link
+          href="/wrong-notebook"
+          className={`card flex items-center justify-between gap-3 p-5 transition hover:shadow-md ${
+            dueCount > 0 ? "border-rose-200 bg-rose-50/40" : ""
+          }`}
+        >
+          <div className="min-w-0">
+            <div className="section-title">🧠 Mistakes due for revision today</div>
+            {dueCount > 0 ? (
+              <div className="mt-1 text-lg font-semibold text-slate-800">
+                {dueCount} question{dueCount > 1 ? "s" : ""} due
+                {weakMistakeTopic ? (
+                  <span className="text-sm font-normal text-slate-500"> · weakest: {weakMistakeTopic.title}</span>
+                ) : null}
+              </div>
+            ) : (
+              <div className="mt-1 text-sm text-slate-500">You&apos;re caught up — nothing due today.</div>
+            )}
+          </div>
+          <span className="btn-primary shrink-0">Review mistakes →</span>
+        </Link>
+      )}
 
       {/* Subjects */}
       <div>

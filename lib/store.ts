@@ -21,6 +21,8 @@ const KEYS = {
   subjectMcq: "pharmaos.subjectMcq",
   vivaDone: "pharmaos.vivaDone",
   theme: "pharmaos.theme",
+  mistakes: "pharmaos.mistakes",
+  competencyStats: "pharmaos.competencyStats",
 };
 
 function read<T>(key: string, fallback: T): T {
@@ -84,6 +86,171 @@ export function getMCQHistory(): MCQAttempt[] {
 export function addMCQAttempt(a: MCQAttempt) {
   write(KEYS.mcqHistory, [a, ...getMCQHistory()].slice(0, 50));
   markStudiedToday();
+}
+
+// ── Mistake Intelligence: wrong-answer notebook + spaced revision ────────────
+// Phase 1: local-only (localStorage), same read/write pattern as everything else
+// so it stays cloud-sync-compatible without any Supabase schema change.
+
+export type MistakeReason =
+  | "concept-not-known"
+  | "confused-options"
+  | "misread"
+  | "guessed"
+  | "time-pressure"
+  | "forgot-clinical";
+
+export const MISTAKE_REASONS: { id: MistakeReason; label: string }[] = [
+  { id: "concept-not-known", label: "Concept not known" },
+  { id: "confused-options", label: "Confused between two options" },
+  { id: "misread", label: "Misread the question" },
+  { id: "guessed", label: "Guessed" },
+  { id: "time-pressure", label: "Time pressure" },
+  { id: "forgot-clinical", label: "Forgot adverse effect / interaction / clinical point" },
+];
+
+export type RevisionStage = "day1" | "day3" | "day7" | "day21" | "mastered";
+
+// Spaced-repetition ladder. Each non-mastered stage schedules the next revision
+// this many days from today. A correct review promotes one rung; a wrong answer
+// (at any stage) resets to Day 1.
+const REVISION_LADDER: RevisionStage[] = ["day1", "day3", "day7", "day21", "mastered"];
+const REVISION_INTERVAL_DAYS: Record<RevisionStage, number> = {
+  day1: 1,
+  day3: 3,
+  day7: 7,
+  day21: 21,
+  mastered: 0,
+};
+export const REVISION_STAGE_LABEL: Record<RevisionStage, string> = {
+  day1: "Day 1",
+  day3: "Day 3",
+  day7: "Day 7",
+  day21: "Day 21 · Final",
+  mastered: "Mastered",
+};
+
+export interface MistakeRecord {
+  mcqId: string;
+  subject: string; // e.g. "pharmacology"
+  question: string;
+  options: string[];
+  answerIndex: number; // correct option (as shown to the student)
+  chosenIndex: number; // student's wrong pick at the last wrong attempt
+  explanation?: string;
+  topic: string; // slug
+  topicTitle?: string;
+  drug?: string; // drug or concept name
+  difficulty: Difficulty;
+  competency: string;
+  reason?: MistakeReason;
+  stage: RevisionStage;
+  lastAttempted: string; // yyyy-mm-dd
+  nextRevision: string; // yyyy-mm-dd ("" once mastered)
+  createdAt: string;
+  bookmarked?: boolean;
+}
+
+function addDaysStr(days: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+export function getMistakes(): MistakeRecord[] {
+  return read<MistakeRecord[]>(KEYS.mistakes, []);
+}
+
+// Called when an MCQ is answered WRONG. A new question enters the notebook at
+// Day 1 (revise tomorrow); a repeat miss resets an existing entry back to Day 1.
+export function recordMistake(
+  m: Omit<
+    MistakeRecord,
+    "stage" | "lastAttempted" | "nextRevision" | "createdAt" | "reason" | "bookmarked"
+  >,
+) {
+  const list = getMistakes();
+  const today = todayStr();
+  const existing = list.find((x) => x.mcqId === m.mcqId);
+  if (existing) {
+    Object.assign(existing, m, {
+      stage: "day1" as RevisionStage,
+      lastAttempted: today,
+      nextRevision: addDaysStr(1),
+    });
+  } else {
+    list.unshift({
+      ...m,
+      stage: "day1",
+      lastAttempted: today,
+      nextRevision: addDaysStr(1),
+      createdAt: today,
+    });
+  }
+  write(KEYS.mistakes, list);
+  markStudiedToday();
+}
+
+export function setMistakeReason(mcqId: string, reason: MistakeReason) {
+  const list = getMistakes();
+  const rec = list.find((x) => x.mcqId === mcqId);
+  if (!rec) return;
+  rec.reason = reason;
+  write(KEYS.mistakes, list);
+}
+
+// Advance (correct) or reset (wrong) a mistake through the spaced ladder.
+export function reviewMistake(mcqId: string, correct: boolean) {
+  const list = getMistakes();
+  const rec = list.find((x) => x.mcqId === mcqId);
+  if (!rec) return;
+  if (correct) {
+    const next = REVISION_LADDER[Math.min(REVISION_LADDER.indexOf(rec.stage) + 1, REVISION_LADDER.length - 1)];
+    rec.stage = next;
+    rec.nextRevision = next === "mastered" ? "" : addDaysStr(REVISION_INTERVAL_DAYS[next]);
+  } else {
+    rec.stage = "day1";
+    rec.nextRevision = addDaysStr(1);
+  }
+  rec.lastAttempted = todayStr();
+  write(KEYS.mistakes, list);
+  markStudiedToday();
+}
+
+export function removeMistake(mcqId: string) {
+  write(
+    KEYS.mistakes,
+    getMistakes().filter((x) => x.mcqId !== mcqId),
+  );
+}
+
+export function toggleMistakeBookmark(mcqId: string) {
+  const list = getMistakes();
+  const rec = list.find((x) => x.mcqId === mcqId);
+  if (!rec) return;
+  rec.bookmarked = !rec.bookmarked;
+  write(KEYS.mistakes, list);
+}
+
+// Mistakes whose next revision falls due today or earlier (excludes mastered).
+export function getDueMistakes(): MistakeRecord[] {
+  const today = todayStr();
+  return getMistakes().filter((m) => m.stage !== "mastered" && m.nextRevision && m.nextRevision <= today);
+}
+
+// ── Accuracy-by-competency tally (drives Progress-page coaching) ─────────────
+export interface CompetencyStat {
+  attempted: number;
+  correct: number;
+}
+export function getCompetencyStats(): Record<string, CompetencyStat> {
+  return read<Record<string, CompetencyStat>>(KEYS.competencyStats, {});
+}
+export function recordCompetencyResult(competency: string, correct: boolean) {
+  const cur = getCompetencyStats();
+  const s = cur[competency] ?? { attempted: 0, correct: 0 };
+  cur[competency] = { attempted: s.attempted + 1, correct: s.correct + (correct ? 1 : 0) };
+  write(KEYS.competencyStats, cur);
 }
 
 // ── Streak ───────────────────────────────────────────────────

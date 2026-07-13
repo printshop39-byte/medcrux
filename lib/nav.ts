@@ -18,6 +18,7 @@ export const NAV: NavItem[] = [
   { href: "/exam", label: "Exam", icon: "📝", mobile: true },
   { href: "/ai-tutor", label: "AI Tutor", icon: "🤖", mobile: true },
   { href: "/bookmarks", label: "Bookmarks", icon: "🔖" },
+  { href: "/wrong-notebook", label: "Wrong Notebook", icon: "🧠" },
   { href: "/progress", label: "Progress", icon: "📈" },
   { href: "/settings", label: "Settings", icon: "⚙️" },
 ];
