@@ -3,7 +3,7 @@
 // Presentation-only: they add no new storage and never throw on empty data.
 
 import { getMistakes, getCompetencyStats, MISTAKE_REASONS } from "./store";
-import { COMPETENCY_LABEL } from "./content";
+import { COMPETENCY_LABEL } from "./mcq-meta";
 import type { Competency } from "./types";
 
 export interface ReasonCount {

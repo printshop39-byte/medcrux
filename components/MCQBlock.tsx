@@ -2,13 +2,28 @@
 
 import { useState } from "react";
 import { MCQ } from "@/lib/types";
+import { mcqMeta } from "@/lib/mcq-meta";
+import { recordMistake, recordCompetencyResult } from "@/lib/store";
+import { MistakeReasonSelector } from "./MistakeReasonSelector";
+
+// Context that turns on Mistake Intelligence for this MCQ. When supplied, a wrong
+// answer is added to the Wrong-Answer Notebook and the "Why did you miss this?"
+// selector appears; competency accuracy is tallied either way.
+export interface McqContext {
+  subject: string; // e.g. "pharmacology", "microbiology"
+  topic: string; // topic slug
+  topicTitle?: string;
+  source?: string; // drug or concept name, when applicable
+}
 
 export function MCQBlock({
   mcq,
   onAnswer,
+  context,
 }: {
   mcq: MCQ;
   onAnswer?: (correct: boolean) => void;
+  context?: McqContext;
 }) {
   // `selected` is the single chosen OPTION INDEX (never the option text), so only
   // one option can ever be "picked" per MCQ. The correct-answer highlight is
@@ -20,7 +35,29 @@ export function MCQBlock({
   function choose(i: number) {
     if (answered) return; // lock after the first answer; record only once
     setSelected(i);
-    onAnswer?.(i === mcq.answerIndex);
+    const correct = i === mcq.answerIndex;
+    // Mistake Intelligence capture — only when the call site supplies context.
+    if (context) {
+      const meta = mcqMeta(mcq);
+      recordCompetencyResult(meta.competency, correct);
+      if (!correct) {
+        recordMistake({
+          mcqId: mcq.id,
+          subject: context.subject,
+          question: mcq.question,
+          options: mcq.options,
+          answerIndex: mcq.answerIndex,
+          chosenIndex: i,
+          explanation: mcq.explanation,
+          topic: context.topic,
+          topicTitle: context.topicTitle,
+          drug: context.source,
+          difficulty: meta.difficulty,
+          competency: meta.competency,
+        });
+      }
+    }
+    onAnswer?.(correct);
   }
 
   return (
@@ -65,6 +102,9 @@ export function MCQBlock({
           <span className="font-semibold text-slate-700">Explanation: </span>
           {mcq.explanation}
         </div>
+      )}
+      {answered && selected !== mcq.answerIndex && context && (
+        <MistakeReasonSelector mcqId={mcq.id} />
       )}
     </div>
   );

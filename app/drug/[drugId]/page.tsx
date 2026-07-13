@@ -97,7 +97,11 @@ export default function DrugPage({ params }: { params: Promise<{ drugId: string 
       <Section title="MCQ Practice">
         <div className="space-y-3">
           {drug.mcqs.map((m) => (
-            <MCQBlock key={m.id} mcq={m} />
+            <MCQBlock
+              key={m.id}
+              mcq={m}
+              context={{ subject: "pharmacology", topic: drug.topic, topicTitle: topic?.title, source: drug.name }}
+            />
           ))}
         </div>
       </Section>

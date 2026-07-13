@@ -239,7 +239,12 @@ export default function ClinicalTopicPage({ params }: { params: Promise<{ topic:
         </h2>
         <div className="space-y-3">
           {topic.mcqs.map((m) => (
-            <MCQBlock key={m.id} mcq={m} onAnswer={(correct) => recordSubjectMCQ(slug, correct)} />
+            <MCQBlock
+              key={m.id}
+              mcq={m}
+              onAnswer={(correct) => recordSubjectMCQ(slug, correct)}
+              context={{ subject: "clinical", topic: slug, topicTitle: topic.title }}
+            />
           ))}
         </div>
       </section>
