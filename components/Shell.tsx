@@ -37,7 +37,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </div>
           <div>
             <div className="text-base font-bold leading-none text-slate-800">MedCrux</div>
-            <div className="text-[11px] text-slate-400">Fast pharmacology revision</div>
+            <div className="text-[11px] text-slate-400">Fast MBBS exam revision</div>
           </div>
         </div>
         <nav className="flex-1 space-y-1 px-3 py-2">

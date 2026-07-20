@@ -237,7 +237,7 @@ export default function ProgressPage() {
 
       {/* Topic completion */}
       <div className="card p-5">
-        <div className="section-title mb-3">Topic completion — {topicProgress}%</div>
+        <div className="section-title mb-3">Pharmacology topic completion — {topicProgress}%</div>
         <Bar pct={topicProgress} />
         <div className="mt-4 space-y-2">
           {TOPICS.map((t) => {

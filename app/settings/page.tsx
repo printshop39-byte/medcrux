@@ -116,9 +116,8 @@ export default function SettingsPage() {
       <div className="card p-5">
         <div className="section-title mb-2">Account & sync</div>
         <p className="text-sm text-slate-500">
-          Google / Email login and cloud sync activate when Supabase is connected. See{" "}
-          <code className="rounded bg-slate-100 px-1">README.md</code> for setup. Until then, progress is saved
-          locally on this device and works offline.
+          Cloud login and sync aren&apos;t available in this version yet. Your progress is saved
+          securely on this device and works fully offline.
         </p>
       </div>
 
